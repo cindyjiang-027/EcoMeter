@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Carbon Calculator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<header class="navbar">
+  <div class="logo">🌱 EcoMeter</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="calculator.html" class="active">Calculator</a>
+  </nav>
+</header>
+
+<main>
+
+  <h2 class="page-title">Carbon Calculator</h2>
+
+  <div class="content">
+
+    <!-- FORM -->
+     <div class="card">
+
+      <!-- Activity Type -->
+      <div class="input-group">
+        <label>Activity Type</label>
+        <select id="activityType" onchange="updateForm()">
+          <option value="">Select</option>
+          <option value="transport">Transport</option>
+          <option value="food">Food</option>
+        </select>
+      </div>
+
+      <!-- Transport Inputs -->
+      <div id="transportFields" class="hidden">
+        <div class="input-group">
+          <label>Transport Type</label>
+          <select id="transport">
+            <option value="">Select</option>
+            <option value="car">Car</option>
+            <option value="bus">Bus</option>
+            <option value="walk">Walking</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label>Distance (miles)</label>
+          <input type="number" id="distance">
+        </div>
+      </div>
+
+      <!-- Food Inputs -->
+      <div id="foodFields" class="hidden">
+        <div class="input-group">
+          <label>Food Category</label>
+          <select id="food">
+            <option value="">Select</option>
+            <option value="meat">Meat-based</option>
+            <option value="vegetarian">Plant-based</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label>Amount (servings)</label>
+          <input type="number" id="amount">
+        </div>
+      </div>
+
+      <button onclick="calculate()">Calculate</button>
+    </div>
+
+    <!-- RESULT -->
+<div class="card">
+  <h3>Your Result</h3>
+  <p id="resultText">Enter data to see your result</p>
+  <p id="tip"></p>
+
+  <hr>
+
+  <h4>📊 Weekly Summary</h4>
+  <p id="weeklySummary">No data yet</p>
+
+  <h4>📈 Trend (Recent)</h4>
+  <ul id="trendList"></ul>
+</div>
+
+  </div>
+
+</main>
+
+<footer class="footer">
+  <p>© 2026 EcoMeter | Make sustainable choices 🌍</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
