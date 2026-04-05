@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<header class="navbar">
+  <div class="logo">🌱 EcoMeter</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="calculator.html">Calculator</a>
+    <a href="dashboard.html" class="active">Dashboard</a>
+  </nav>
+</header>
+
+<main>
+
+  <h2 class="page-title">Weekly Dashboard</h2>
+
+  <!-- 🔥 SUMMARY CARDS -->
+  <div class="summary">
+
+    <div class="summary-card">
+      <p>This week</p>
+      <h2 id="totalWeek">0 kg</h2>
+      <span>Total carbon footprint</span>
+    </div>
+
+    <div class="summary-card">
+      <p>Average / day</p>
+      <h2 id="avgDay">0 kg</h2>
+      <span>Based on entries</span>
+    </div>
+
+    <div class="summary-card">
+      <p>Top driver</p>
+      <h2 id="topDriver">-</h2>
+      <span>Largest contributor</span>
+    </div>
+
+    <div class="summary-card">
+      <p>Entries logged</p>
+      <h2 id="entries">0</h2>
+      <span>Days tracked</span>
+    </div>
+
+  </div>
+
+  <!-- 🔥 MAIN DASHBOARD -->
+  <div class="dashboard">
+
+    <!-- LEFT: Daily Records -->
+    <div class="card" id="dailyList">
+      <h3>Recent Entries</h3>
+    </div>
+
+    <!-- RIGHT: Chart -->
+    <div class="card">
+      <h3>Emission Trend</h3>
+      <canvas id="chart"></canvas>
+    </div>
+
+  </div>
+
+</main>
+
+<footer class="footer">
+  <p>© 2026 EcoMeter | Make sustainable choices 🌍</p>
+</footer>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Your logic -->
+<script src="dashboard.js"></script>
+
+</body>
+</html>

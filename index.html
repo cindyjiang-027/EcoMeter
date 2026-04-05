@@ -1,41 +1,1341 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>EcoMeter</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoMeter | Personal Carbon Footprint Tracker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg: #eef5ec;
+      --bg-accent: #d8ead4;
+      --surface: rgba(255,255,255,0.88);
+      --surface-strong: #ffffff;
+      --text: #132417;
+      --muted: #5b6c5e;
+      --line: rgba(19,36,23,0.1);
+      --primary: #215b38;
+      --primary-soft: #ddf4dd;
+      --secondary: #9bcf8f;
+      --gold: #f0c874;
+      --shadow: 0 24px 60px rgba(38,76,49,0.12);
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{
+      font-family:"Plus Jakarta Sans",sans-serif;
+      color:var(--text);
+      min-height:100vh;
+      background:
+        radial-gradient(circle at top left,rgba(255,255,255,0.75),transparent 30%),
+        linear-gradient(140deg,var(--bg) 0%,#f7fbf2 55%,var(--bg-accent) 100%);
+    }
+    button,input,select{font:inherit;color:inherit}
 
+    /* ── NAVBAR ── */
+    .navbar{
+      position:sticky;top:0;z-index:100;
+      background:rgba(185,216,201,0.92);
+      backdrop-filter:blur(16px);
+      display:flex;justify-content:space-between;align-items:center;
+      padding:18px 60px;
+      box-shadow:0 2px 16px rgba(38,76,49,0.1);
+    }
+    .logo{font-weight:800;font-size:20px;letter-spacing:-0.03em;color:var(--primary)}
+    .nav-links{display:flex;gap:6px}
+    .nav-links button{
+      background:transparent;border:none;cursor:pointer;
+      padding:8px 16px;border-radius:999px;
+      font-weight:600;font-size:14px;color:var(--primary);
+      transition:background 0.2s;
+    }
+    .nav-links button:hover{background:rgba(33,91,56,0.1)}
+    .nav-links button.active{background:rgba(33,91,56,0.18)}
+
+    /* ── PAGES ── */
+    .page{display:none;animation:fadeIn 0.3s ease}
+    .page.active{display:block}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+    .shell{
+      width:min(1180px,calc(100% - 32px));
+      margin:0 auto;
+      padding:42px 0 54px;
+    }
+
+    /* ── CARDS ── */
+    .card{
+      background:var(--surface);
+      backdrop-filter:blur(16px);
+      border:1px solid rgba(255,255,255,0.72);
+      border-radius:var(--radius-xl);
+      box-shadow:var(--shadow);
+      padding:28px;
+    }
+
+    /* ── HOME PAGE ── */
+    .home-hero{
+      display:grid;
+      grid-template-columns:1.7fr 0.95fr;
+      gap:24px;
+      align-items:stretch;
+      margin-bottom:32px;
+    }
+    .hero-copy{
+      background:var(--surface);
+      backdrop-filter:blur(16px);
+      border:1px solid rgba(255,255,255,0.72);
+      border-radius:var(--radius-xl);
+      box-shadow:var(--shadow);
+      padding:36px;
+      position:relative;overflow:hidden;
+    }
+    .hero-copy::after{
+      content:"";position:absolute;inset:auto -50px -60px auto;
+      width:220px;height:220px;
+      background:radial-gradient(circle,rgba(155,207,143,0.38),transparent 68%);
+    }
+    .eyebrow{font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--primary);margin-bottom:10px}
+    .hero-copy h1{font-size:clamp(2.2rem,5vw,3.8rem);line-height:.95;letter-spacing:-.05em;max-width:14ch;margin-bottom:18px}
+    .hero-copy p{font-size:1rem;line-height:1.7;color:var(--muted);max-width:56ch;margin-bottom:26px}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+    .hero-panel{
+      background:var(--surface);
+      backdrop-filter:blur(16px);
+      border:1px solid rgba(255,255,255,0.72);
+      border-radius:var(--radius-xl);
+      box-shadow:var(--shadow);
+      padding:28px;
+      display:flex;flex-direction:column;justify-content:flex-end;
+    }
+    .panel-tag{
+      width:fit-content;padding:8px 12px;border-radius:999px;
+      background:var(--primary-soft);color:var(--primary);
+      font-weight:700;font-size:13px;margin-bottom:16px;
+    }
+    .hero-panel p{font-size:1.06rem;line-height:1.75;color:var(--muted)}
+    .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .feature-card{
+      background:var(--surface);border:1px solid rgba(255,255,255,0.72);
+      border-radius:var(--radius-lg);box-shadow:var(--shadow);
+      padding:24px;transition:transform .2s ease,box-shadow .2s ease;
+    }
+    .feature-card:hover{transform:translateY(-4px);box-shadow:0 32px 72px rgba(38,76,49,0.16)}
+    .feature-icon{font-size:28px;margin-bottom:12px}
+    .feature-card h3{font-size:1.1rem;letter-spacing:-.02em;margin-bottom:8px}
+    .feature-card p{font-size:.9rem;line-height:1.6;color:var(--muted)}
+
+    /* ── CALCULATOR PAGE ── */
+    .calc-layout{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+    .section-kicker{font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--primary);margin-bottom:8px}
+    .section-head{display:flex;justify-content:space-between;align-items:start;gap:18px;margin-bottom:22px}
+    .section-head h2{font-size:1.6rem;letter-spacing:-.04em;margin-top:4px}
+    .section-note{font-size:.9rem;color:var(--muted);text-align:right}
+    .activity-form{display:grid;gap:18px}
+    .triple-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .input-block{
+      padding:16px;border-radius:var(--radius-md);
+      border:1px solid var(--line);background:rgba(255,255,255,0.72);
+    }
+    .input-label{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:12px}
+    .input-label span{font-weight:700;font-size:.95rem}
+    .input-label small{color:var(--muted);font-size:.8rem}
+    .field{display:grid;gap:6px;margin-bottom:10px}
+    .field:last-child{margin-bottom:0}
+    .field span{font-size:.88rem;font-weight:600}
+    .field input,.field select{
+      width:100%;border:1px solid var(--line);border-radius:12px;
+      background:var(--surface-strong);padding:12px 14px;
+      transition:border-color .2s,box-shadow .2s;
+    }
+    .field input:focus,.field select:focus{
+      outline:none;border-color:rgba(33,91,56,.42);
+      box-shadow:0 0 0 4px rgba(155,207,143,.28);
+    }
+    .factor-note{padding:12px 14px;border-radius:12px;background:rgba(221,244,221,.6);font-size:.85rem;color:var(--muted);line-height:1.6}
+    .live-preview{
+      padding:14px 16px;border-radius:14px;
+      background:rgba(221,244,221,.72);color:var(--primary);font-weight:600;line-height:1.6;
+    }
+    .form-actions{display:flex;justify-content:flex-start}
+
+    /* Result card */
+    .result-section h3{font-size:1.3rem;letter-spacing:-.03em;margin-bottom:16px}
+    .result-number{
+      font-size:3rem;font-weight:800;letter-spacing:-.06em;color:var(--primary);
+      margin-bottom:8px;line-height:1;
+    }
+    .result-tip{
+      padding:14px 16px;border-radius:14px;
+      background:rgba(221,244,221,.6);color:var(--muted);
+      font-size:.92rem;line-height:1.6;margin-bottom:20px;
+    }
+    .result-tip:empty{display:none}
+    .trend-list{list-style:none;display:grid;gap:8px;margin-top:12px}
+    .trend-item{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:10px 14px;border-radius:12px;
+      background:rgba(255,255,255,.72);border:1px solid var(--line);
+    }
+    .trend-item .day-label{font-size:.85rem;color:var(--muted)}
+    .trend-item .day-val{font-weight:700;font-size:.95rem;color:var(--primary)}
+    .weekly-total{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:14px 16px;border-radius:14px;
+      background:var(--primary);color:white;margin-bottom:16px;
+    }
+    .weekly-total span{font-size:.9rem;opacity:.85}
+    .weekly-total strong{font-size:1.3rem;font-weight:800}
+
+    /* ── DASHBOARD PAGE ── */
+    .dashboard-page .shell{display:grid;gap:24px}
+    .metrics-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+    .metric-card{
+      background:var(--surface);border:1px solid rgba(255,255,255,.72);
+      border-radius:var(--radius-lg);box-shadow:var(--shadow);padding:20px;
+    }
+    .metric-card .m-label{font-size:.82rem;font-weight:600;color:var(--muted);margin-bottom:8px;display:block}
+    .metric-card .m-value{font-size:2rem;font-weight:800;letter-spacing:-.05em;color:var(--primary);line-height:1;margin-bottom:4px;display:block}
+    .metric-card .m-sub{font-size:.8rem;color:var(--muted)}
+    .dashboard-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px}
+    .bars-display{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;min-height:240px;align-items:end}
+    .bar-card{display:flex;flex-direction:column;justify-content:flex-end;gap:8px;height:100%}
+    .bar-track{position:relative;min-height:200px;border-radius:20px;background:rgba(33,91,56,.08);overflow:hidden}
+    .bar-fill{position:absolute;bottom:0;left:0;width:100%;border-radius:20px 20px 0 0;transition:height .6s cubic-bezier(.34,1.56,.64,1)}
+    .bar-fill.transport{background:linear-gradient(180deg,var(--secondary) 0%,var(--primary) 100%)}
+    .bar-fill.food{background:linear-gradient(180deg,#f2db89 0%,#d39d25 100%)}
+    .bar-fill.energy{background:linear-gradient(180deg,#9ad6d9 0%,#367b83 100%)}
+    .bar-meta{display:flex;justify-content:space-between;align-items:center;gap:6px}
+    .bar-meta strong{font-size:.95rem}
+    .bar-meta span{color:var(--muted);font-size:.85rem}
+    .empty-state{
+      grid-column:1/-1;padding:20px;border-radius:18px;
+      border:1px dashed var(--line);background:rgba(255,255,255,.64);
+      color:var(--muted);line-height:1.6;font-size:.9rem;
+    }
+    .suggestion-list{list-style:none;display:grid;gap:10px}
+    .suggestion-list li{
+      padding:12px 16px;border-radius:14px;
+      background:rgba(255,255,255,.72);border:1px solid var(--line);
+      font-size:.9rem;line-height:1.6;color:var(--muted);
+    }
+    .suggestion-list li::before{content:"→ ";color:var(--primary);font-weight:700}
+
+    /* table */
+    .table-wrap{overflow-x:auto}
+    table{width:100%;border-collapse:collapse}
+    thead th{
+      padding:12px 14px;text-align:left;
+      font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+      color:var(--muted);border-bottom:1px solid var(--line);
+    }
+    tbody td{padding:14px;border-bottom:1px solid rgba(19,36,23,.06);font-size:.9rem;color:var(--muted)}
+    tbody tr:last-child td{border-bottom:none}
+    tbody tr:hover td{background:rgba(33,91,56,.03)}
+    .empty-row td{text-align:center;padding:32px;color:var(--muted)}
+
+    /* ── BUTTONS ── */
+    .primary-btn{
+      background:var(--primary);color:#fff;border:none;
+      border-radius:999px;padding:14px 22px;cursor:pointer;
+      font-weight:700;font-size:.95rem;
+      box-shadow:0 14px 26px rgba(33,91,56,.22);
+      transition:transform .2s ease,opacity .2s ease;
+    }
+    .primary-btn:hover{transform:translateY(-1px);opacity:.92}
+    .secondary-btn{
+      background:rgba(255,255,255,.8);color:var(--text);
+      border:1px solid var(--line);border-radius:999px;
+      padding:14px 20px;cursor:pointer;font-weight:600;font-size:.9rem;
+      transition:transform .2s ease,background .2s ease;
+    }
+    .secondary-btn:hover{transform:translateY(-1px);background:rgba(255,255,255,.95)}
+
+    /* ── FOOTER ── */
+    footer{
+      text-align:center;padding:24px;
+      background:rgba(185,216,201,.8);
+      color:var(--primary);font-size:.9rem;font-weight:500;
+      margin-top:0;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:1024px){
+      .home-hero,.calc-layout,.dashboard-grid,.entries-row{grid-template-columns:1fr}
+      .triple-grid{grid-template-columns:1fr}
+      .metrics-row{grid-template-columns:repeat(2,1fr)}
+      .navbar{padding:16px 24px}
+    }
+    @media(max-width:640px){
+      .shell{width:calc(100% - 24px);padding:24px 0 40px}
+      .features-grid{grid-template-columns:1fr}
+      .metrics-row{grid-template-columns:1fr 1fr}
+    }
+
+    /* ── HERO PANEL ILLUSTRATION ── */
+    .hero-panel-illustration{
+      flex:1;
+      border-radius:var(--radius-lg);
+      overflow:hidden;
+      margin-bottom:20px;
+      min-height:160px;
+      background:#eef5ec;
+    }
+
+    /* ── CATEGORY TABS ── */
+    .cat-tabs{display:flex;gap:8px;margin-bottom:16px}
+    .cat-tab{
+      flex:1;padding:10px 8px;border-radius:12px;border:1px solid var(--line);
+      background:rgba(255,255,255,.72);color:var(--muted);
+      font-size:.88rem;font-weight:600;cursor:pointer;
+      transition:all .18s ease;
+    }
+    .cat-tab:hover{background:rgba(33,91,56,.06);color:var(--primary)}
+    .cat-tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .cat-panel{display:grid;gap:14px}
+
+    /* ── TODAY LIST ── */
+    .today-item{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:10px 14px;border-radius:12px;
+      background:rgba(255,255,255,.72);border:1px solid var(--line);
+      gap:10px;
+    }
+    .today-item-left{display:flex;flex-direction:column;gap:2px}
+    .today-item-cat{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+    .today-item-desc{font-size:.9rem;color:var(--text)}
+    .today-item-val{font-weight:700;font-size:.95rem;color:var(--primary);white-space:nowrap}
+    .today-item-del{
+      background:none;border:none;cursor:pointer;color:var(--muted);
+      font-size:14px;padding:2px 6px;border-radius:6px;width:auto;
+      transition:color .15s,background .15s;
+    }
+    .today-item-del:hover{color:#c0392b;background:rgba(192,57,43,.08)}
+  </style>
+</head>
 <body>
 
-<header class="navbar">
+<!-- NAVBAR -->
+<nav class="navbar">
   <div class="logo">🌱 EcoMeter</div>
-  <nav>
-    <a href="index.html" class="active">Home</a>
-    <a href="calculator.html">Calculator</a>
-  </nav>
-</header>
+  <div class="nav-links">
+    <button onclick="showPage('home')" id="nav-home" class="active">Home</button>
+    <button onclick="showPage('calculator')" id="nav-calculator">Calculator</button>
+    <button onclick="showPage('dashboard')" id="nav-dashboard">Dashboard</button>
+  </div>
+</nav>
 
-<main>
+<!-- ══════════════ HOME PAGE ══════════════ -->
+<div class="page active" id="page-home">
+  <div class="shell">
+    <div class="home-hero">
+      <div class="hero-copy">
+        <p class="eyebrow">EcoMeter · Carbon Tracker</p>
+        <h1>Make daily carbon footprint visible, measurable, and actionable.</h1>
+        <p>Log daily choices across transport, food, and home energy — then turn those choices into a weekly estimate and practical reduction ideas.</p>
+        <div class="hero-actions">
+          <button class="primary-btn" onclick="showPage('calculator')">Start Tracking</button>
+          <button class="secondary-btn" onclick="seedDemo()">Load demo week</button>
+          <button class="secondary-btn" onclick="clearData()">Reset data</button>
+        </div>
+      </div>
+      <div class="hero-panel">
+        <div class="hero-panel-illustration">
+          <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+            <!-- sky gradient background -->
+            <defs>
+              <radialGradient id="sunGlow" cx="72%" cy="28%" r="38%">
+                <stop offset="0%" stop-color="#fffbe6" stop-opacity="1"/>
+                <stop offset="100%" stop-color="#eef5ec" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <rect width="320" height="200" fill="#eef5ec"/>
+            <rect width="320" height="200" fill="url(#sunGlow)"/>
 
-  <div class="home-container">
-    <div class="card hero-card">
-      <h1>Track Your Carbon Footprint</h1>
-      <p>
-        EcoMeter helps you understand your daily environmental impact
-        and make smarter, sustainable choices.
-      </p>
+            <!-- rolling hills -->
+            <ellipse cx="160" cy="230" rx="240" ry="90" fill="#c8e6c0"/>
+            <ellipse cx="290" cy="220" rx="140" ry="70" fill="#b9d8c9"/>
+            <ellipse cx="30"  cy="215" rx="120" ry="60" fill="#b9d8c9"/>
 
-      <button onclick="goToCalculator()">Start Tracking</button>
+            <!-- sun -->
+            <circle cx="232" cy="52" r="22" fill="#f0c874" opacity=".9"/>
+            <circle cx="232" cy="52" r="28" fill="#f0c874" opacity=".18"/>
+
+            <!-- sun rays -->
+            <g stroke="#f0c874" stroke-width="2" opacity=".55" stroke-linecap="round">
+              <line x1="232" y1="16" x2="232" y2="8"/>
+              <line x1="256" y1="28" x2="262" y2="22"/>
+              <line x1="268" y1="52" x2="276" y2="52"/>
+              <line x1="256" y1="76" x2="262" y2="82"/>
+              <line x1="208" y1="28" x2="202" y2="22"/>
+              <line x1="196" y1="52" x2="188" y2="52"/>
+            </g>
+
+            <!-- clouds -->
+            <g fill="white" opacity=".82">
+              <ellipse cx="58"  cy="48" rx="28" ry="14"/>
+              <ellipse cx="78"  cy="42" rx="20" ry="12"/>
+              <ellipse cx="38"  cy="44" rx="18" ry="10"/>
+              <ellipse cx="148" cy="34" rx="22" ry="11"/>
+              <ellipse cx="164" cy="29" rx="16" ry="9"/>
+              <ellipse cx="132" cy="32" rx="14" ry="8"/>
+            </g>
+
+            <!-- big tree left -->
+            <rect x="74" y="112" width="8" height="52" rx="3" fill="#5a8a50"/>
+            <ellipse cx="78" cy="100" rx="26" ry="30" fill="#4CAF50"/>
+            <ellipse cx="64" cy="112" rx="18" ry="22" fill="#66bb6a"/>
+            <ellipse cx="92" cy="110" rx="16" ry="20" fill="#388E3C"/>
+
+            <!-- small tree right -->
+            <rect x="228" y="128" width="6" height="38" rx="2" fill="#5a8a50"/>
+            <ellipse cx="231" cy="118" rx="18" ry="22" fill="#4CAF50"/>
+            <ellipse cx="220" cy="126" rx="12" ry="16" fill="#66bb6a"/>
+            <ellipse cx="242" cy="124" rx="11" ry="15" fill="#388E3C"/>
+
+            <!-- bicycle -->
+            <g transform="translate(136,140)" stroke="#215b38" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="0"  cy="14" r="14"/>
+              <circle cx="36" cy="14" r="14"/>
+              <polyline points="0,14 10,0 26,0"/>
+              <polyline points="10,0 18,14 36,14"/>
+              <line x1="18" y1="14" x2="26" y2="0"/>
+              <line x1="26" y1="0" x2="32" y2="6"/>
+            </g>
+
+            <!-- small leaves / sparkles -->
+            <g fill="#9bcf8f" opacity=".7">
+              <ellipse cx="108" cy="88" rx="5" ry="3" transform="rotate(-30 108 88)"/>
+              <ellipse cx="256" cy="96" rx="4" ry="2.5" transform="rotate(20 256 96)"/>
+              <ellipse cx="48"  cy="130" rx="4" ry="2.5" transform="rotate(-15 48 130)"/>
+            </g>
+
+            <!-- CO2 label floating -->
+            <g transform="translate(260,68)">
+              <rect x="-22" y="-12" width="52" height="22" rx="11" fill="#ddf4dd"/>
+              <text x="4" y="5" font-family="Plus Jakarta Sans,sans-serif" font-size="10" font-weight="700" fill="#215b38" text-anchor="middle">↓ CO₂</text>
+            </g>
+          </svg>
+        </div>
+        <div class="panel-tag">Vision</div>
+        <p>Help people understand and reduce their environmental impact by making their daily carbon footprint easy to track.</p>
+      </div>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🚗</div>
+        <h3>Transport</h3>
+        <p>Log car, bus, subway, bike, or flight trips and understand how travel choices drive your footprint.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🥗</div>
+        <h3>Food</h3>
+        <p>From beef-heavy meals to vegan plates, see how food choices compare across the carbon spectrum.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Home Energy</h3>
+        <p>Track household electricity use and see how energy consumption stacks up in your weekly total.</p>
+      </div>
     </div>
   </div>
+</div>
 
-</main>
+<!-- ══════════════ CALCULATOR PAGE ══════════════ -->
+<div class="page" id="page-calculator">
+  <div class="shell">
+    <div class="calc-layout">
 
-<footer class="footer">
+      <!-- FORM CARD -->
+      <div class="card">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">Log an activity</p>
+            <h2>Add to today's record</h2>
+          </div>
+          <span class="section-note">One activity at a time</span>
+        </div>
+
+        <form class="activity-form" id="activity-form" onsubmit="handleSubmit(event)">
+          <div class="field">
+            <span>Date</span>
+            <input type="date" id="entry-date" required />
+          </div>
+
+          <!-- Category tabs -->
+          <div class="cat-tabs">
+            <button type="button" class="cat-tab active" onclick="switchCat('transport', this)">🚗 Transport</button>
+            <button type="button" class="cat-tab" onclick="switchCat('food', this)">🥗 Food</button>
+            <button type="button" class="cat-tab" onclick="switchCat('energy', this)">⚡ Energy</button>
+          </div>
+
+          <!-- Transport fields -->
+          <div id="cat-transport" class="cat-panel">
+            <div class="field">
+              <span>Mode</span>
+              <select id="transport-type" oninput="renderLivePreview()">
+                <option value="car">Car</option>
+                <option value="bus">Bus</option>
+                <option value="train">Train</option>
+                <option value="subway">Subway</option>
+                <option value="bike">Bike / Walk</option>
+                <option value="flight">Flight</option>
+              </select>
+            </div>
+            <div class="field">
+              <span>Distance (km)</span>
+              <input type="number" id="transport-distance" min="0" step="1" value="12" oninput="renderLivePreview()" />
+            </div>
+          </div>
+
+          <!-- Food fields -->
+          <div id="cat-food" class="cat-panel" style="display:none">
+            <div class="field">
+              <span>Meal type</span>
+              <select id="food-type" oninput="renderLivePreview()">
+                <option value="beef">Beef-heavy meal</option>
+                <option value="chicken">Chicken meal</option>
+                <option value="fish">Fish meal</option>
+                <option value="vegetarian">Vegetarian meal</option>
+                <option value="vegan">Vegan meal</option>
+              </select>
+            </div>
+            <div class="field">
+              <span>Servings</span>
+              <input type="number" id="food-servings" min="0" step="1" value="1" oninput="renderLivePreview()" />
+            </div>
+          </div>
+
+          <!-- Energy fields -->
+          <div id="cat-energy" class="cat-panel" style="display:none">
+            <div class="field">
+              <span>Electricity use (kWh)</span>
+              <input type="number" id="energy-kwh" min="0" step="0.5" value="5" oninput="renderLivePreview()" />
+            </div>
+            <div class="factor-note">Uses a simplified emissions factor to keep the MVP fast and explainable.</div>
+          </div>
+
+          <div class="live-preview" id="live-preview">
+            Estimated impact: <strong>0.0 kg CO₂e</strong>
+          </div>
+
+          <div class="form-actions">
+            <button class="primary-btn" type="submit">Add activity</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- RESULT CARD -->
+      <div class="card result-section" id="result-card">
+        <p class="section-kicker">Last added</p>
+        <h3>This activity</h3>
+        <div class="result-number" id="result-number">— kg</div>
+        <div class="result-tip" id="result-tip"></div>
+
+        <div class="weekly-total" id="weekly-total-block" style="display:none">
+          <span>This week total</span>
+          <strong id="weekly-total-val">0 kg CO₂</strong>
+        </div>
+
+        <h4 style="font-size:.95rem;font-weight:700;margin:18px 0 10px;color:var(--muted)">📋 Today's activities</h4>
+        <ul class="trend-list" id="today-list">
+          <li style="text-align:center;color:var(--muted);font-size:.85rem;padding:12px">No activities yet today.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ DASHBOARD PAGE ══════════════ -->
+<div class="page" id="page-dashboard">
+  <div class="shell">
+    <!-- Metrics Row -->
+    <div class="metrics-row">
+      <div class="metric-card">
+        <span class="m-label">This week</span>
+        <span class="m-value" id="d-week-total">0.0 kg</span>
+        <span class="m-sub">Total estimated carbon footprint</span>
+      </div>
+      <div class="metric-card">
+        <span class="m-label">Average / day</span>
+        <span class="m-value" id="d-daily-avg">0.0 kg</span>
+        <span class="m-sub">Based on entries in tracker</span>
+      </div>
+      <div class="metric-card">
+        <span class="m-label">Top driver</span>
+        <span class="m-value" id="d-top-driver" style="font-size:1.4rem">—</span>
+        <span class="m-sub">Largest contributing category</span>
+      </div>
+      <div class="metric-card">
+        <span class="m-label">Entries logged</span>
+        <span class="m-value" id="d-entry-count">0</span>
+        <span class="m-sub">Days captured in this sprint</span>
+      </div>
+    </div>
+
+    <!-- Breakdown bars -->
+    <div class="card" style="margin-bottom:24px">
+      <p class="section-kicker">Breakdown</p>
+      <h2 style="font-size:1.4rem;letter-spacing:-.03em;margin-bottom:20px">Category contribution</h2>
+      <div class="bars-display" id="bars-display">
+        <div class="empty-state">Add an entry or load the demo week to see the category breakdown.</div>
+      </div>
+    </div>
+
+    <!-- Suggestions -->
+    <div class="card" style="margin-bottom:24px">
+      <p class="section-kicker">Suggestions</p>
+      <h2 style="font-size:1.4rem;letter-spacing:-.03em;margin-bottom:20px">Small changes with visible impact</h2>
+      <ul class="suggestion-list" id="suggestion-list">
+        <li>Start by logging one typical day. Even one entry makes the weekly picture more concrete.</li>
+      </ul>
+    </div>
+
+    <!-- Bar chart above table -->
+    <div class="card" style="margin-bottom:24px">
+      <p class="section-kicker">Daily emissions</p>
+      <h2 style="font-size:1.4rem;letter-spacing:-.03em;margin-bottom:20px">CO₂e per day</h2>
+      <div style="position:relative;width:100%;height:200px">
+        <canvas id="entries-chart"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="section-kicker">Recent entries</p>
+      <h2 style="font-size:1.4rem;letter-spacing:-.03em;margin-bottom:20px">What was logged this week</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>🚗 Transport</th>
+              <th>🥗 Food</th>
+              <th>⚡ Energy</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="entries-body">
+            <tr class="empty-row">
+              <td colspan="5">No activities yet. Add one or load the demo week.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
   <p>© 2026 EcoMeter | Make sustainable choices 🌍</p>
 </footer>
 
-<script src="script.js"></script>
+<script>
+const STORAGE_KEY = "ecometer-activities";
+
+const TRANSPORT_FACTORS = {car:.21,bus:.08,train:.04,subway:.05,bike:0,flight:.24};
+const FOOD_FACTORS = {beef:5,chicken:2.5,fish:1.8,vegetarian:1.3,vegan:.9};
+const ENERGY_FACTOR = .42;
+
+const TRANSPORT_LABELS = {car:"Car",bus:"Bus",train:"Train",subway:"Subway",bike:"Bike / Walk",flight:"Flight"};
+const FOOD_LABELS = {beef:"Beef-heavy meal",chicken:"Chicken meal",fish:"Fish meal",vegetarian:"Vegetarian meal",vegan:"Vegan meal"};
+
+let trendChartInstance = null;
+let entriesChartInstance = null;
+let currentCat = 'transport';
+
+function el(id) { return document.getElementById(id); }
+
+// ── PAGE NAV ──
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-links button').forEach(b => b.classList.remove('active'));
+  el('page-' + name).classList.add('active');
+  el('nav-' + name).classList.add('active');
+  if (name === 'dashboard') renderDashboard();
+  if (name === 'calculator') { renderLivePreview(); renderTodayList(); updateWeeklyTotal(); }
+}
+
+// ── CATEGORY TABS ──
+function switchCat(cat, btn) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.cat-panel').forEach(p => p.style.display = 'none');
+  if (btn) btn.classList.add('active');
+  el('cat-' + cat).style.display = 'grid';
+  renderLivePreview();
+}
+
+// ── ESTIMATE ──
+function getCurrentEstimate() {
+  if (currentCat === 'transport') {
+    const tType = el('transport-type').value;
+    const tDist = Number(el('transport-distance').value) || 0;
+    const kg = tDist * TRANSPORT_FACTORS[tType];
+    return { category:'transport', kg, label: TRANSPORT_LABELS[tType] + ' · ' + tDist + ' km' };
+  }
+  if (currentCat === 'food') {
+    const fType = el('food-type').value;
+    const fServ = Number(el('food-servings').value) || 0;
+    const kg = fServ * FOOD_FACTORS[fType];
+    return { category:'food', kg, label: FOOD_LABELS[fType] + ' · ' + fServ + ' serving' + (fServ !== 1 ? 's' : '') };
+  }
+  if (currentCat === 'energy') {
+    const kWh = Number(el('energy-kwh').value) || 0;
+    const kg = kWh * ENERGY_FACTOR;
+    return { category:'energy', kg, label: kWh + ' kWh electricity' };
+  }
+  return { category:'', kg:0, label:'' };
+}
+
+function renderLivePreview() {
+  const preview = el('live-preview');
+  if (!preview) return;
+  const est = getCurrentEstimate();
+  preview.innerHTML = `Estimated impact: <strong>${est.kg.toFixed(2)} kg CO&#x2082;e</strong>`;
+}
+
+// ── SUBMIT ──
+function handleSubmit(event) {
+  event.preventDefault();
+  const est = getCurrentEstimate();
+  if (est.kg === 0 && currentCat !== 'transport') {
+    // still allow 0 for bike/walk
+  }
+  const date = el('entry-date').value;
+
+  // Build the activity record
+  const activity = {
+    id: crypto.randomUUID(),
+    date,
+    category: est.category,
+    kg: est.kg,
+    label: est.label,
+    // store raw values for dashboard aggregation
+    transportKg: currentCat === 'transport' ? est.kg : 0,
+    foodKg:      currentCat === 'food'      ? est.kg : 0,
+    energyKg:    currentCat === 'energy'    ? est.kg : 0,
+  };
+
+  const activities = getActivities();
+  activities.push(activity);
+  saveActivities(activities);
+
+  // show result
+  const catLabel = {transport:'🚗 Transport', food:'🥗 Food', energy:'⚡ Energy'}[est.category];
+  el('result-number').textContent = est.kg.toFixed(2) + ' kg CO₂e';
+  const tips = {
+    car:"Driving produces high emissions. Consider bus or walking for some trips.",
+    bus:"Good choice! Bus travel is more eco-friendly than driving.",
+    train:"Great choice! Trains have a low carbon footprint.",
+    subway:"Subway is a clean and efficient way to travel.",
+    bike:"Zero emissions! Biking or walking is the greenest choice.",
+    flight:"Flying has high emissions. Consider trains for shorter distances.",
+    beef:"Beef has high emissions. Swapping to plant-based meals makes a big difference.",
+    chicken:"Chicken is a relatively lower-carbon meat option.",
+    fish:"Fish is a more sustainable protein than red meat.",
+    vegetarian:"Great choice! Vegetarian meals have a low carbon footprint.",
+    vegan:"Excellent! Vegan meals have the lowest carbon footprint.",
+    energy:"Try reducing AC, heating, or standby devices to lower your energy footprint.",
+  };
+  const tipKey = currentCat === 'transport' ? el('transport-type').value
+               : currentCat === 'food'      ? el('food-type').value
+               : 'energy';
+  el('result-tip').textContent = tips[tipKey] || '';
+
+  renderTodayList();
+  updateWeeklyTotal();
+}
+
+// ── TODAY LIST ──
+function renderTodayList() {
+  const list = el('today-list');
+  if (!list) return;
+  const today = new Date().toISOString().slice(0,10);
+  const selectedDate = el('entry-date') ? el('entry-date').value : today;
+  const items = getActivities().filter(a => a.date === selectedDate);
+
+  if (!items.length) {
+    list.innerHTML = '<li style="text-align:center;color:var(--muted);font-size:.85rem;padding:12px">No activities logged for this date.</li>';
+    return;
+  }
+  const catIcon = {transport:'🚗', food:'🥗', energy:'⚡'};
+  const catName = {transport:'Transport', food:'Food', energy:'Energy'};
+  list.innerHTML = items.map(a => `
+    <li class="today-item">
+      <div class="today-item-left">
+        <span class="today-item-cat">${catIcon[a.category] || ''} ${catName[a.category] || a.category}</span>
+        <span class="today-item-desc">${a.label}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="today-item-val">${a.kg.toFixed(2)} kg</span>
+        <button class="today-item-del" onclick="deleteActivity('${a.id}')" title="Remove">✕</button>
+      </div>
+    </li>`).join('');
+}
+
+function deleteActivity(id) {
+  saveActivities(getActivities().filter(a => a.id !== id));
+  renderTodayList();
+  updateWeeklyTotal();
+  if (el('page-dashboard').classList.contains('active')) renderDashboard();
+}
+
+function updateWeeklyTotal() {
+  const block = el('weekly-total-block');
+  if (!block) return;
+  const total = getActivities().reduce((s,a) => s + a.kg, 0);
+  if (total > 0) {
+    block.style.display = 'flex';
+    el('weekly-total-val').textContent = total.toFixed(2) + ' kg CO₂';
+  } else {
+    block.style.display = 'none';
+  }
+}
+
+// ── STORAGE ──
+function getActivities() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch { return []; }
+}
+function saveActivities(activities) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(activities));
+}
+function clearData() {
+  // Clear all possible keys this app has ever used
+  ['ecometer-activities', 'ecometer-week-entries', 'carbonData'].forEach(k => localStorage.removeItem(k));
+  // Reset calculator UI
+  const rn = el('result-number'); if (rn) rn.textContent = '— kg';
+  const rt = el('result-tip'); if (rt) rt.textContent = '';
+  renderTodayList();
+  updateWeeklyTotal();
+  renderDashboard();
+  showPage('home');
+}
+function seedDemo() {
+  const today = new Date();
+  const raw = [
+    {offset:0, activities:[
+      {cat:'transport', tType:'car',    tDist:14},
+      {cat:'transport', tType:'subway', tDist:6},
+      {cat:'food',      fType:'chicken',fServ:2},
+      {cat:'food',      fType:'vegetarian',fServ:1},
+      {cat:'energy',    kWh:4.5},
+    ]},
+    {offset:1, activities:[
+      {cat:'transport', tType:'subway', tDist:18},
+      {cat:'food',      fType:'beef',   fServ:1},
+      {cat:'food',      fType:'vegan',  fServ:1},
+      {cat:'energy',    kWh:3.5},
+    ]},
+    {offset:2, activities:[
+      {cat:'transport', tType:'bus',    tDist:12},
+      {cat:'transport', tType:'bike',   tDist:5},
+      {cat:'food',      fType:'fish',   fServ:2},
+      {cat:'energy',    kWh:4},
+    ]},
+    {offset:3, activities:[
+      {cat:'transport', tType:'bike',   tDist:8},
+      {cat:'food',      fType:'vegan',  fServ:3},
+      {cat:'energy',    kWh:3},
+    ]},
+    {offset:4, activities:[
+      {cat:'transport', tType:'train',  tDist:20},
+      {cat:'food',      fType:'chicken',fServ:2},
+      {cat:'food',      fType:'fish',   fServ:1},
+      {cat:'energy',    kWh:4.5},
+    ]},
+    {offset:5, activities:[
+      {cat:'transport', tType:'car',    tDist:10},
+      {cat:'transport', tType:'bus',    tDist:8},
+      {cat:'food',      fType:'beef',   fServ:1},
+      {cat:'food',      fType:'vegetarian',fServ:2},
+      {cat:'energy',    kWh:5},
+    ]},
+    {offset:6, activities:[
+      {cat:'transport', tType:'flight', tDist:70},
+      {cat:'food',      fType:'beef',   fServ:1},
+      {cat:'energy',    kWh:6},
+    ]},
+  ];
+
+  const result = [];
+  raw.forEach(day => {
+    const d = new Date(today);
+    d.setDate(today.getDate() - day.offset);
+    const dateStr = d.toISOString().slice(0,10);
+    day.activities.forEach(a => {
+      let kg = 0, label = '', tKg = 0, fKg = 0, eKg = 0;
+      if (a.cat === 'transport') {
+        kg = a.tDist * TRANSPORT_FACTORS[a.tType];
+        label = TRANSPORT_LABELS[a.tType] + ' · ' + a.tDist + ' km';
+        tKg = kg;
+      } else if (a.cat === 'food') {
+        kg = a.fServ * FOOD_FACTORS[a.fType];
+        label = FOOD_LABELS[a.fType] + ' · ' + a.fServ + ' serving' + (a.fServ !== 1 ? 's' : '');
+        fKg = kg;
+      } else if (a.cat === 'energy') {
+        kg = a.kWh * ENERGY_FACTOR;
+        label = a.kWh + ' kWh electricity';
+        eKg = kg;
+      }
+      result.push({ id: crypto.randomUUID(), date: dateStr, category: a.cat, kg, label, transportKg: tKg, foodKg: fKg, energyKg: eKg });
+    });
+  });
+
+  saveActivities(result);
+  showPage('dashboard');
+}
+
+// ── DASHBOARD ──
+function renderDashboard() {
+  const activities = getActivities();
+
+  // Aggregate totals
+  const totals = activities.reduce((acc,a) => {
+    acc.transport += a.transportKg;
+    acc.food      += a.foodKg;
+    acc.energy    += a.energyKg;
+    acc.total     += a.kg;
+    return acc;
+  }, {transport:0, food:0, energy:0, total:0});
+
+  el('d-week-total').textContent  = totals.total.toFixed(1) + ' kg';
+  el('d-entry-count').textContent = String(activities.length);
+
+  // Unique days for avg
+  const days = new Set(activities.map(a => a.date)).size;
+  el('d-daily-avg').textContent = (days ? totals.total / days : 0).toFixed(1) + ' kg';
+
+  const cats = [["Transport", totals.transport], ["Food", totals.food], ["Energy", totals.energy]];
+  const top = cats.reduce((a,c) => c[1] > a[1] ? c : a, ["—", 0]);
+  el('d-top-driver').textContent = top[1] > 0 ? top[0] : '—';
+
+  renderBars(cats, totals.total);
+  renderSuggestions(totals);
+  renderTable(activities);
+  renderCharts(activities);
+}
+
+function renderBars(cats, grand) {
+  const container = el('bars-display');
+  if (!grand) {
+    container.innerHTML = '<div class="empty-state">Add an activity or load the demo week to see the breakdown.</div>';
+    return;
+  }
+  const fillClass = ['transport','food','energy'];
+  container.innerHTML = cats.map(([label,val],i) => {
+    const h = Math.max(8, (val/grand)*100);
+    return `<div class="bar-card">
+      <div class="bar-track"><div class="bar-fill ${fillClass[i]}" style="height:${h}%"></div></div>
+      <div class="bar-meta"><strong>${label}</strong><span>${val.toFixed(1)} kg</span></div>
+    </div>`;
+  }).join('');
+}
+
+function renderCharts(activities) {
+  if (trendChartInstance)   { trendChartInstance.destroy();   trendChartInstance = null; }
+  if (entriesChartInstance) { entriesChartInstance.destroy(); entriesChartInstance = null; }
+
+  // Group by date
+  const byDate = {};
+  activities.forEach(a => {
+    if (!byDate[a.date]) byDate[a.date] = {transport:0, food:0, energy:0};
+    byDate[a.date].transport += a.transportKg;
+    byDate[a.date].food      += a.foodKg;
+    byDate[a.date].energy    += a.energyKg;
+  });
+  const dates = Object.keys(byDate).sort();
+  const labels = dates.map(d => formatDate(d));
+
+  // Line chart (trend)
+  const trendCanvas = el('trend-chart');
+  if (trendCanvas) {
+    trendChartInstance = new Chart(trendCanvas.getContext('2d'), {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'kg CO2e',
+          data: dates.map(d => +(byDate[d].transport + byDate[d].food + byDate[d].energy).toFixed(2)),
+          borderColor: '#215b38',
+          backgroundColor: 'rgba(33,91,56,.08)',
+          borderWidth: 2,
+          pointBackgroundColor: '#215b38',
+          pointRadius: 4,
+          tension: .4,
+          fill: true,
+        }]
+      },
+      options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
+        scales:{
+          y:{beginAtZero:true, grid:{color:'rgba(33,91,56,.07)'}, ticks:{color:'#5b6c5e',font:{size:11}}},
+          x:{grid:{display:false}, ticks:{color:'#5b6c5e',font:{size:11}}}
+        }
+      }
+    });
+  }
+
+  // Stacked bar chart (per day breakdown)
+  const barCanvas = el('entries-chart');
+  if (barCanvas) {
+    entriesChartInstance = new Chart(barCanvas.getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          { label:'Transport', data: dates.map(d => +byDate[d].transport.toFixed(2)), backgroundColor:'#9bcf8f', borderRadius:4 },
+          { label:'Food',      data: dates.map(d => +byDate[d].food.toFixed(2)),      backgroundColor:'#f0c874', borderRadius:4 },
+          { label:'Energy',    data: dates.map(d => +byDate[d].energy.toFixed(2)),    backgroundColor:'#9ad6d9', borderRadius:4 },
+        ]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{ display:true, position:'top', labels:{color:'#5b6c5e', font:{size:11}, boxWidth:12, padding:14} } },
+        scales:{
+          x:{ stacked:true, grid:{display:false}, ticks:{color:'#5b6c5e',font:{size:11}} },
+          y:{ stacked:true, beginAtZero:true, grid:{color:'rgba(33,91,56,.07)'}, ticks:{color:'#5b6c5e',font:{size:11}} }
+        }
+      }
+    });
+  }
+}
+
+function renderSuggestions(totals) {
+  const sug = [];
+  const total = totals.total;
+  if (!total) {
+    sug.push("Start by logging one typical day. Even one entry makes the weekly picture more concrete.");
+    sug.push("You can log multiple activities per day — a morning drive, lunch, and dinner each as separate entries.");
+    sug.push("Use the dashboard to compare a high-impact day against a lighter day next week.");
+  } else {
+    const shares = { t: totals.transport/total, f: totals.food/total, e: totals.energy/total };
+    if (shares.t >= .35) sug.push("Transport is your largest driver this week. Replacing one car trip with transit, biking, or walking could cut your weekly total quickly.");
+    if (shares.f >= .35) sug.push("Food is taking a large share this week. Swapping one beef-heavy meal for a vegetarian option can create a noticeable drop.");
+    if (shares.e >= .25) sug.push("Home energy is contributing a lot right now. A small reduction in AC, heating, or extra appliance use could help immediately.");
+    sug.push("Focus on one habit first. A small repeatable change is usually easier than trying to optimize everything at once.");
+    sug.push("Review your weekly pattern, not just one day. The point of the tracker is to reveal trends people normally miss.");
+  }
+  el('suggestion-list').innerHTML = sug.slice(0,3).map(s => `<li>${s}</li>`).join('');
+}
+
+function renderTable(activities) {
+  const tbody = el('entries-body');
+  if (!activities.length) {
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="5">No activities yet. Add one or load the demo week.</td></tr>';
+    return;
+  }
+
+  // Group by date
+  const byDate = {};
+  activities.forEach(a => {
+    if (!byDate[a.date]) byDate[a.date] = {transport:0, food:0, energy:0};
+    byDate[a.date].transport += a.transportKg;
+    byDate[a.date].food      += a.foodKg;
+    byDate[a.date].energy    += a.energyKg;
+  });
+
+  const dates = Object.keys(byDate).sort().reverse();
+  tbody.innerHTML = dates.map(date => {
+    const d = byDate[date];
+    const total = d.transport + d.food + d.energy;
+    const fmt = v => v > 0 ? `<span style="font-weight:600;color:var(--text)">${v.toFixed(2)}</span><span style="color:var(--muted);font-size:.8rem"> kg</span>` : '<span style="color:var(--muted)">—</span>';
+    return `<tr>
+      <td style="font-weight:600">${formatDate(date)}</td>
+      <td>${fmt(d.transport)}</td>
+      <td>${fmt(d.food)}</td>
+      <td>${fmt(d.energy)}</td>
+      <td style="font-weight:800;color:var(--primary)">${total.toFixed(2)} kg</td>
+    </tr>`;
+  }).join('');
+}
+
+function formatDate(ds) {
+  return new Date(ds + 'T00:00:00').toLocaleDateString('en-US', {month:'short', day:'numeric'});
+}
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', function() {
+  el('entry-date').value = new Date().toISOString().slice(0,10);
+  el('entry-date').addEventListener('change', () => { renderTodayList(); });
+  renderLivePreview();
+  renderTodayList();
+  updateWeeklyTotal();
+});
+</script>
+  <style>
+    :root {
+      --bg: #eef5ec;
+      --bg-accent: #d8ead4;
+      --surface: rgba(255,255,255,0.88);
+      --surface-strong: #ffffff;
+      --text: #132417;
+      --muted: #5b6c5e;
+      --line: rgba(19,36,23,0.1);
+      --primary: #215b38;
+      --primary-soft: #ddf4dd;
+      --secondary: #9bcf8f;
+      --gold: #f0c874;
+      --shadow: 0 24px 60px rgba(38,76,49,0.12);
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{
+      font-family:"Plus Jakarta Sans",sans-serif;
+      color:var(--text);
+      min-height:100vh;
+      background:
+        radial-gradient(circle at top left,rgba(255,255,255,0.75),transparent 30%),
+        linear-gradient(140deg,var(--bg) 0%,#f7fbf2 55%,var(--bg-accent) 100%);
+    }
+    button,input,select{font:inherit;color:inherit}
+
+    /* ── NAVBAR ── */
+    .navbar{
+      position:sticky;top:0;z-index:100;
+      background:rgba(185,216,201,0.92);
+      backdrop-filter:blur(16px);
+      display:flex;justify-content:space-between;align-items:center;
+      padding:18px 60px;
+      box-shadow:0 2px 16px rgba(38,76,49,0.1);
+    }
+    .logo{font-weight:800;font-size:20px;letter-spacing:-0.03em;color:var(--primary)}
+    .nav-links{display:flex;gap:6px}
+    .nav-links button{
+      background:transparent;border:none;cursor:pointer;
+      padding:8px 16px;border-radius:999px;
+      font-weight:600;font-size:14px;color:var(--primary);
+      transition:background 0.2s;
+    }
+    .nav-links button:hover{background:rgba(33,91,56,0.1)}
+    .nav-links button.active{background:rgba(33,91,56,0.18)}
+
+    /* ── PAGES ── */
+    .page{display:none;animation:fadeIn 0.3s ease}
+    .page.active{display:block}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+    .shell{
+      width:min(1180px,calc(100% - 32px));
+      margin:0 auto;
+      padding:42px 0 54px;
+    }
+
+    /* ── CARDS ── */
+    .card{
+      background:var(--surface);
+      backdrop-filter:blur(16px);
+      border:1px solid rgba(255,255,255,0.72);
+      border-radius:var(--radius-xl);
+      box-shadow:var(--shadow);
+      padding:28px;
+    }
+
+    /* ── HOME PAGE ── */
+    .home-hero{
+      display:grid;
+      grid-template-columns:1.7fr 0.95fr;
+      gap:24px;
+      align-items:stretch;
+      margin-bottom:32px;
+    }
+    .hero-copy{
+      background:var(--surface);
+      backdrop-filter:blur(16px);
+      border:1px solid rgba(255,255,255,0.72);
+      border-radius:var(--radius-xl);
+      box-shadow:var(--shadow);
+      padding:36px;
+      position:relative;overflow:hidden;
+    }
+    .hero-copy::after{
+      content:"";position:absolute;inset:auto -50px -60px auto;
+      width:220px;height:220px;
+      background:radial-gradient(circle,rgba(155,207,143,0.38),transparent 68%);
+    }
+    .eyebrow{font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--primary);margin-bottom:10px}
+    .hero-copy h1{font-size:clamp(2.2rem,5vw,3.8rem);line-height:.95;letter-spacing:-.05em;max-width:14ch;margin-bottom:18px}
+    .hero-copy p{font-size:1rem;line-height:1.7;color:var(--muted);max-width:56ch;margin-bottom:26px}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+    .hero-panel{
+      background:var(--surface);
+      backdrop-filter:blur(16px);
+      border:1px solid rgba(255,255,255,0.72);
+      border-radius:var(--radius-xl);
+      box-shadow:var(--shadow);
+      padding:28px;
+      display:flex;flex-direction:column;justify-content:flex-end;
+    }
+    .panel-tag{
+      width:fit-content;padding:8px 12px;border-radius:999px;
+      background:var(--primary-soft);color:var(--primary);
+      font-weight:700;font-size:13px;margin-bottom:16px;
+    }
+    .hero-panel p{font-size:1.06rem;line-height:1.75;color:var(--muted)}
+    .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .feature-card{
+      background:var(--surface);border:1px solid rgba(255,255,255,0.72);
+      border-radius:var(--radius-lg);box-shadow:var(--shadow);
+      padding:24px;transition:transform .2s ease,box-shadow .2s ease;
+    }
+    .feature-card:hover{transform:translateY(-4px);box-shadow:0 32px 72px rgba(38,76,49,0.16)}
+    .feature-icon{font-size:28px;margin-bottom:12px}
+    .feature-card h3{font-size:1.1rem;letter-spacing:-.02em;margin-bottom:8px}
+    .feature-card p{font-size:.9rem;line-height:1.6;color:var(--muted)}
+
+    /* ── CALCULATOR PAGE ── */
+    .calc-layout{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+    .section-kicker{font-size:.8rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--primary);margin-bottom:8px}
+    .section-head{display:flex;justify-content:space-between;align-items:start;gap:18px;margin-bottom:22px}
+    .section-head h2{font-size:1.6rem;letter-spacing:-.04em;margin-top:4px}
+    .section-note{font-size:.9rem;color:var(--muted);text-align:right}
+    .activity-form{display:grid;gap:18px}
+    .triple-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .input-block{
+      padding:16px;border-radius:var(--radius-md);
+      border:1px solid var(--line);background:rgba(255,255,255,0.72);
+    }
+    .input-label{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:12px}
+    .input-label span{font-weight:700;font-size:.95rem}
+    .input-label small{color:var(--muted);font-size:.8rem}
+    .field{display:grid;gap:6px;margin-bottom:10px}
+    .field:last-child{margin-bottom:0}
+    .field span{font-size:.88rem;font-weight:600}
+    .field input,.field select{
+      width:100%;border:1px solid var(--line);border-radius:12px;
+      background:var(--surface-strong);padding:12px 14px;
+      transition:border-color .2s,box-shadow .2s;
+    }
+    .field input:focus,.field select:focus{
+      outline:none;border-color:rgba(33,91,56,.42);
+      box-shadow:0 0 0 4px rgba(155,207,143,.28);
+    }
+    .factor-note{padding:12px 14px;border-radius:12px;background:rgba(221,244,221,.6);font-size:.85rem;color:var(--muted);line-height:1.6}
+    .live-preview{
+      padding:14px 16px;border-radius:14px;
+      background:rgba(221,244,221,.72);color:var(--primary);font-weight:600;line-height:1.6;
+    }
+    .form-actions{display:flex;justify-content:flex-start}
+
+    /* Result card */
+    .result-section h3{font-size:1.3rem;letter-spacing:-.03em;margin-bottom:16px}
+    .result-number{
+      font-size:3rem;font-weight:800;letter-spacing:-.06em;color:var(--primary);
+      margin-bottom:8px;line-height:1;
+    }
+    .result-tip{
+      padding:14px 16px;border-radius:14px;
+      background:rgba(221,244,221,.6);color:var(--muted);
+      font-size:.92rem;line-height:1.6;margin-bottom:20px;
+    }
+    .result-tip:empty{display:none}
+    .trend-list{list-style:none;display:grid;gap:8px;margin-top:12px}
+    .trend-item{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:10px 14px;border-radius:12px;
+      background:rgba(255,255,255,.72);border:1px solid var(--line);
+    }
+    .trend-item .day-label{font-size:.85rem;color:var(--muted)}
+    .trend-item .day-val{font-weight:700;font-size:.95rem;color:var(--primary)}
+    .weekly-total{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:14px 16px;border-radius:14px;
+      background:var(--primary);color:white;margin-bottom:16px;
+    }
+    .weekly-total span{font-size:.9rem;opacity:.85}
+    .weekly-total strong{font-size:1.3rem;font-weight:800}
+
+    /* ── DASHBOARD PAGE ── */
+    .dashboard-page .shell{display:grid;gap:24px}
+    .metrics-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+    .metric-card{
+      background:var(--surface);border:1px solid rgba(255,255,255,.72);
+      border-radius:var(--radius-lg);box-shadow:var(--shadow);padding:20px;
+    }
+    .metric-card .m-label{font-size:.82rem;font-weight:600;color:var(--muted);margin-bottom:8px;display:block}
+    .metric-card .m-value{font-size:2rem;font-weight:800;letter-spacing:-.05em;color:var(--primary);line-height:1;margin-bottom:4px;display:block}
+    .metric-card .m-sub{font-size:.8rem;color:var(--muted)}
+    .dashboard-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px}
+    .bars-display{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;min-height:240px;align-items:end}
+    .bar-card{display:flex;flex-direction:column;justify-content:flex-end;gap:8px;height:100%}
+    .bar-track{position:relative;min-height:200px;border-radius:20px;background:rgba(33,91,56,.08);overflow:hidden}
+    .bar-fill{position:absolute;bottom:0;left:0;width:100%;border-radius:20px 20px 0 0;transition:height .6s cubic-bezier(.34,1.56,.64,1)}
+    .bar-fill.transport{background:linear-gradient(180deg,var(--secondary) 0%,var(--primary) 100%)}
+    .bar-fill.food{background:linear-gradient(180deg,#f2db89 0%,#d39d25 100%)}
+    .bar-fill.energy{background:linear-gradient(180deg,#9ad6d9 0%,#367b83 100%)}
+    .bar-meta{display:flex;justify-content:space-between;align-items:center;gap:6px}
+    .bar-meta strong{font-size:.95rem}
+    .bar-meta span{color:var(--muted);font-size:.85rem}
+    .empty-state{
+      grid-column:1/-1;padding:20px;border-radius:18px;
+      border:1px dashed var(--line);background:rgba(255,255,255,.64);
+      color:var(--muted);line-height:1.6;font-size:.9rem;
+    }
+    .suggestion-list{list-style:none;display:grid;gap:10px}
+    .suggestion-list li{
+      padding:12px 16px;border-radius:14px;
+      background:rgba(255,255,255,.72);border:1px solid var(--line);
+      font-size:.9rem;line-height:1.6;color:var(--muted);
+    }
+    .suggestion-list li::before{content:"→ ";color:var(--primary);font-weight:700}
+
+    /* table */
+    .table-wrap{overflow-x:auto}
+    table{width:100%;border-collapse:collapse}
+    thead th{
+      padding:12px 14px;text-align:left;
+      font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+      color:var(--muted);border-bottom:1px solid var(--line);
+    }
+    tbody td{padding:14px;border-bottom:1px solid rgba(19,36,23,.06);font-size:.9rem;color:var(--muted)}
+    tbody tr:last-child td{border-bottom:none}
+    tbody tr:hover td{background:rgba(33,91,56,.03)}
+    .empty-row td{text-align:center;padding:32px;color:var(--muted)}
+
+    /* ── BUTTONS ── */
+    .primary-btn{
+      background:var(--primary);color:#fff;border:none;
+      border-radius:999px;padding:14px 22px;cursor:pointer;
+      font-weight:700;font-size:.95rem;
+      box-shadow:0 14px 26px rgba(33,91,56,.22);
+      transition:transform .2s ease,opacity .2s ease;
+    }
+    .primary-btn:hover{transform:translateY(-1px);opacity:.92}
+    .secondary-btn{
+      background:rgba(255,255,255,.8);color:var(--text);
+      border:1px solid var(--line);border-radius:999px;
+      padding:14px 20px;cursor:pointer;font-weight:600;font-size:.9rem;
+      transition:transform .2s ease,background .2s ease;
+    }
+    .secondary-btn:hover{transform:translateY(-1px);background:rgba(255,255,255,.95)}
+
+    /* ── FOOTER ── */
+    footer{
+      text-align:center;padding:24px;
+      background:rgba(185,216,201,.8);
+      color:var(--primary);font-size:.9rem;font-weight:500;
+      margin-top:0;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:1024px){
+      .home-hero,.calc-layout,.dashboard-grid,.entries-row{grid-template-columns:1fr}
+      .triple-grid{grid-template-columns:1fr}
+      .metrics-row{grid-template-columns:repeat(2,1fr)}
+      .navbar{padding:16px 24px}
+    }
+    @media(max-width:640px){
+      .shell{width:calc(100% - 24px);padding:24px 0 40px}
+      .features-grid{grid-template-columns:1fr}
+      .metrics-row{grid-template-columns:1fr 1fr}
+    }
 </body>
 </html>
