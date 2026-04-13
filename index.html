@@ -323,18 +323,37 @@
     .tip-item{
       background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:18px;
       padding:18px;cursor:pointer;transition:transform .2s ease, box-shadow .2s ease, background .2s ease;
-      min-height:180px;display:flex;flex-direction:column;justify-content:center;
+      min-height:220px;display:flex;flex-direction:column;justify-content:center;
     }
     .tip-item:hover{transform:translateY(-3px);box-shadow:0 18px 32px rgba(38,76,49,.10);background:rgba(255,255,255,.92);}
     .tip-front{text-align:center;}
     .tip-front h4{font-size:1.05rem;margin:10px 0 6px;color:var(--primary);}
     .tip-front p{font-size:.9rem;color:var(--muted);}
     .tip-icon{font-size:2rem;}
-    .tip-back{display:none;font-size:.95rem;line-height:1.7;color:var(--muted);text-align:left;}
+    .tip-back{display:none;font-size:.95rem;line-height:1.75;color:var(--muted);text-align:left;}
     .tip-item.open .tip-front{display:none;}
     .tip-item.open .tip-back{display:block;}
+
+    /* ── EDUCATION LOGIC BLOCKS ── */
+    .logic-block{margin-top:14px;padding:14px 16px;border-radius:14px;background:rgba(255,255,255,.72);border:1px solid var(--line);}
+    .logic-block h4{margin-bottom:6px;font-size:1rem;color:var(--primary);}
+    .logic-block p{margin:0;color:var(--muted);line-height:1.75;}
+    .logic-examples{display:grid;gap:10px;margin-top:8px;}
+    .logic-example{display:flex;justify-content:space-between;gap:14px;
+      padding:10px 12px;border-radius:12px;background:rgba(221,244,221,.55);
+    }
+    .logic-example strong{color:var(--primary);min-width:90px;}
+    .logic-example span{color:var(--muted);line-height:1.6;}
+    
+    /* ── EDUCATION IMPACT CARDS ── */
+    .impact-points{display:grid;gap:14px;margin-top:14px;}
+    .impact-point{padding:14px 16px;border-radius:14px;background:rgba(255,255,255,.72);border:1px solid var(--line);}
+    .impact-point h4{margin-bottom:6px;font-size:1rem;color:var(--primary);}
+    .impact-point p{margin:0;color:var(--muted);line-height:1.7;}
+    
     @media(max-width:900px){
       .tips-grid{grid-template-columns:1fr;}
+      .logic-example{flex-direction:column;}
     }
   </style>
 </head>
@@ -658,63 +677,17 @@
 
     <div class="card" style="margin-bottom:24px">
       <p class="section-kicker">Education</p>
-      <h2 style="font-size:1.6rem;margin-bottom:16px">Understanding Carbon Footprint</h2>
-      <p style="color:var(--muted);line-height:1.7">
-        Learn what carbon footprint means, why it matters, and how simple daily choices affect the environment.
+      <h2 style="font-size:1.8rem; margin-bottom:14px;">Understand Your Carbon Footprint</h2>
+      <p style="color:var(--muted); line-height:1.8; max-width:70ch;">
+        Carbon footprint is not just a climate term. It is a practical way to understand which daily choices create the most impact — and which changes are actually worth making.
       </p>
     </div>
-
-    <!-- SECTION 1 -->
-    <div class="card" style="margin-bottom:20px">
-      <h3>1. What is a carbon footprint?</h3>
-      <p style="margin-top:10px;color:var(--muted);line-height:1.7">
-        A carbon footprint is the total amount of greenhouse gases, especially CO₂,
-        produced by a person’s daily activities such as transportation, food, and electricity use.
-      </p>
-    </div>
-
-    <!-- SECTION 2 -->
-    <div class="card" style="margin-bottom:20px">
-      <h3>2. Why does it matter?</h3>
-      <p style="margin-top:10px;color:var(--muted);line-height:1.7">
-        Carbon emissions contribute to climate change, which leads to extreme weather,
-        rising sea levels, and environmental damage. Understanding your footprint helps
-        connect everyday choices with global impact.
-      </p>
-    </div>
-
-    <!-- SECTION 3 -->
-    <div class="card" style="margin-bottom:20px">
-      <h3>3. Simple emission calculation logic</h3>
-      <p style="margin-top:10px;color:var(--muted)">
-        <strong>Emissions = Activity × Emission Factor</strong>
-      </p>
-      <ul style="margin-top:10px;color:var(--muted);line-height:1.7">
-        <li>Transport: distance × factor</li>
-        <li>Food: meals × factor</li>
-        <li>Energy: electricity × factor</li>
-      </ul>
-      <p style="margin-top:10px;color:var(--muted)">
-        This is a simplified model to help compare choices.
-      </p>
-    </div>
-
-    <!-- SECTION 4 -->
-    <div class="card">
-      <h3>4. Environmental impact examples</h3>
-      <ul style="margin-top:10px;color:var(--muted);line-height:1.7">
-        <li>Driving produces more emissions than public transport</li>
-        <li>Walking or biking produces almost zero emissions</li>
-        <li>Beef meals have higher emissions than vegetarian meals</li>
-        <li>More electricity use increases carbon footprint</li>
-      </ul>
-    </div>
-
-    <div class="card quick-tips-card" style="margin-top:20px">
+    
+    <div class="card quick-tips-card" style="margin-bottom:24px">
       <p class="section-kicker">Quick Tips</p>
-      <h3 style="font-size:1.35rem; margin-bottom:10px;">Easy Ways to Reduce Emissions</h3>
+      <h3 style="font-size:1.35rem; margin-bottom:10px;">Start with the highest-leverage changes</h3>
       <p style="color:var(--muted); line-height:1.7; margin-bottom:18px;">
-        Click each card to reveal one simple action you can take in daily life.
+        Small changes are not all equally useful. The goal is not to change everything. The goal is to notice which repeated behaviors create the most impact, and start there.
       </p>
     
       <div class="tips-grid">
@@ -725,7 +698,7 @@
             <p>Click to expand</p>
           </div>
           <div class="tip-back">
-            Try replacing short car trips with walking, biking, or public transit when possible.
+            Instead of asking how to eliminate driving completely, ask which trips do not actually require a car. Short and repeated trips are usually the easiest place to reduce emissions without changing your whole routine.
           </div>
         </div>
     
@@ -736,7 +709,7 @@
             <p>Click to expand</p>
           </div>
           <div class="tip-back">
-            Eating fewer beef-heavy meals and choosing more plant-based meals can lower food-related emissions.
+            Not all meals matter equally. Beef-heavy meals usually dominate food emissions, so reducing the highest-impact category often gives more benefit than trying to change everything at once.
           </div>
         </div>
     
@@ -747,10 +720,103 @@
             <p>Click to expand</p>
           </div>
           <div class="tip-back">
-            Turning off unused lights and electronics can help reduce electricity use at home.
+            Energy use is easy to ignore because it feels invisible. The bigger issue is usually not one-time use, but the baseline habits that happen every day, such as cooling, heating, lighting, and always-on devices.
           </div>
         </div>
       </div>
+    </div>
+    
+    <div class="card" style="margin-bottom:20px">
+      <p class="section-kicker">Concept</p>
+      <h3 style="font-size:1.35rem; margin-bottom:10px;">What is a carbon footprint?</h3>
+      <p style="color:var(--muted); line-height:1.8;">
+        A carbon footprint is a way to estimate how much greenhouse gas impact is created by everyday activities such as transportation, food, and energy use.
+      </p>
+      <p style="margin-top:12px; color:var(--muted); line-height:1.8;">
+        What makes it useful is that it turns invisible systems into something comparable. Driving, eating, and using electricity may feel like unrelated actions, but carbon footprint gives them a shared unit so people can understand which choices matter more.
+      </p>
+    </div>
+    
+    <div class="card" style="margin-bottom:20px">
+      <p class="section-kicker">Why it matters</p>
+      <h3 style="font-size:1.35rem; margin-bottom:10px;">Why does it matter?</h3>
+      <p style="color:var(--muted); line-height:1.8;">
+        Carbon footprint matters because it helps reveal dependence on high-emission systems. The issue is not one isolated action. The real impact comes from repeated behavior at scale.
+      </p>
+      <p style="margin-top:12px; color:var(--muted); line-height:1.8;">
+        A single choice may not change much by itself, but high-frequency habits can add up quickly over time. That is why carbon footprint is useful as a decision tool: it helps people focus on the behaviors that are both common and high-impact.
+      </p>
+    </div>
+    
+    <div class="card" style="margin-bottom:20px">
+      <p class="section-kicker">Logic</p>
+      <h3 style="font-size:1.35rem; margin-bottom:14px;">How the calculation works</h3>
+    
+      <div class="logic-block">
+        <h4>Basic idea</h4>
+        <p><strong>Emissions = Activity Amount × Emission Factor</strong></p>
+      </div>
+    
+      <div class="logic-block">
+        <h4>What that means</h4>
+        <p>
+          The calculator does not measure exact real-world emissions. Instead, it uses average values to estimate impact in a way that makes different choices easier to compare.
+        </p>
+      </div>
+    
+      <div class="logic-block">
+        <h4>Examples</h4>
+        <div class="logic-examples">
+          <div class="logic-example">
+            <strong>Transport</strong>
+            <span>distance × average emissions per km</span>
+          </div>
+          <div class="logic-example">
+            <strong>Food</strong>
+            <span>meal type × average emissions per meal</span>
+          </div>
+          <div class="logic-example">
+            <strong>Energy</strong>
+            <span>electricity use × emissions per kWh</span>
+          </div>
+        </div>
+      </div>
+    
+      <div class="logic-block">
+        <h4>Why this still helps</h4>
+        <p>
+          Even if the number is not perfect, the model is still useful because it shows trends, comparisons, and dominant categories.
+        </p>
+      </div>
+    </div>
+    
+    <div class="card" style="margin-bottom:20px">
+      <p class="section-kicker">Impact</p>
+      <h3 style="font-size:1.35rem; margin-bottom:10px;">What actually drives impact?</h3>
+      <p style="color:var(--muted); line-height:1.8;">
+        Most environmental impact is not driven by random one-time actions. It usually comes from a combination of frequency and intensity.
+      </p>
+    
+      <div class="impact-points">
+        <div class="impact-point">
+          <h4>Transport</h4>
+          <p>Often has high impact per action, especially when the same travel pattern repeats over time.</p>
+        </div>
+    
+        <div class="impact-point">
+          <h4>Food</h4>
+          <p>Usually has moderate impact per meal, but it adds up because food choices happen frequently.</p>
+        </div>
+    
+        <div class="impact-point">
+          <h4>Energy</h4>
+          <p>May feel less dramatic than travel, but it creates a steady baseline footprint in everyday life.</p>
+        </div>
+      </div>
+    
+      <p style="margin-top:14px; color:var(--muted); line-height:1.8;">
+        This is why total emissions alone are not enough. What matters more is the pattern behind them: which category appears often, which one spikes, and which one dominates over time.
+      </p>
     </div>
 
   </div>
