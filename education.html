@@ -4,11 +4,269 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EcoMeter | Education</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #eef5ec;
+      --bg-accent: #d8ead4;
+      --surface: rgba(255,255,255,0.88);
+      --surface-strong: #ffffff;
+      --text: #132417;
+      --muted: #5b6c5e;
+      --line: rgba(19,36,23,0.1);
+      --primary: #215b38;
+      --primary-soft: #ddf4dd;
+      --secondary: #9bcf8f;
+      --gold: #f0c874;
+      --shadow: 0 24px 60px rgba(38,76,49,0.12);
+      --radius-xl: 28px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{
+      font-family:"Plus Jakarta Sans",sans-serif;
+      color:var(--text);
+      min-height:100vh;
+      display:flex;flex-direction:column;
+      background:
+        radial-gradient(circle at top left,rgba(255,255,255,0.75),transparent 30%),
+        linear-gradient(140deg,var(--bg) 0%,#f7fbf2 55%,var(--bg-accent) 100%);
+    }
+
+    .navbar{
+      position:sticky;top:0;z-index:100;
+      background:rgba(185,216,201,0.92);
+      backdrop-filter:blur(16px);
+      display:flex;justify-content:space-between;align-items:center;
+      padding:18px 60px;
+      box-shadow:0 2px 16px rgba(38,76,49,0.1);
+    }
+    .logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .logo-text{font-weight:800;font-size:20px;letter-spacing:-0.03em;color:var(--primary)}
+    nav{display:flex;gap:6px}
+    nav a{
+      background:transparent;border:none;cursor:pointer;
+      padding:8px 16px;border-radius:999px;text-decoration:none;
+      font-weight:600;font-size:14px;color:var(--primary);
+      transition:background 0.2s;
+    }
+    nav a:hover{background:rgba(33,91,56,0.1)}
+    nav a.active{background:rgba(33,91,56,0.18)}
+
+    main{flex:1}
+    .shell{
+      width:min(1180px,calc(100% - 32px));
+      margin:0 auto;
+      padding:42px 0 54px;
+    }
+    .card{
+      background:var(--surface);
+      backdrop-filter:blur(16px);
+      border:1px solid rgba(255,255,255,0.72);
+      border-radius:var(--radius-xl);
+      box-shadow:var(--shadow);
+      padding:28px;
+    }
+    .section-kicker{
+      font-size:.8rem;font-weight:700;letter-spacing:.12em;
+      text-transform:uppercase;color:var(--primary);margin-bottom:8px;
+    }
+    footer{
+      text-align:center;padding:24px;
+      background:rgba(185,216,201,.8);
+      color:var(--primary);font-size:.9rem;font-weight:500;
+    }
+
+    /* ── EDUCATION GRID (existing content) ── */
+    .education-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px}
+    .education-card h2{font-size:1.15rem;letter-spacing:-.02em;margin-bottom:12px;color:var(--primary)}
+    .education-card p{font-size:.92rem;line-height:1.75;color:var(--muted);margin-bottom:8px}
+    .education-card ul{list-style:none;padding:0;margin:8px 0}
+    .education-card ul li{
+      padding:8px 12px;border-radius:10px;
+      background:rgba(221,244,221,.45);
+      font-size:.9rem;color:var(--muted);line-height:1.6;
+      margin-bottom:6px;
+    }
+    .education-card ul li::before{content:"→ ";color:var(--primary);font-weight:700}
+
+    /* ── COMPARE SECTION ── */
+    .compare-section{margin-bottom:24px}
+    .compare-controls{
+      display:grid;grid-template-columns:1fr auto;gap:16px;align-items:end;
+      margin-bottom:24px;
+    }
+    .compare-slider-group{display:flex;flex-direction:column;gap:8px}
+    .compare-slider-group label{font-weight:600;font-size:.95rem}
+    .compare-slider-row{display:flex;align-items:center;gap:14px}
+    .compare-slider-row input[type=range]{
+      flex:1;height:8px;-webkit-appearance:none;appearance:none;
+      background:linear-gradient(90deg,var(--primary-soft),var(--secondary));
+      border-radius:999px;outline:none;cursor:pointer;
+    }
+    .compare-slider-row input[type=range]::-webkit-slider-thumb{
+      -webkit-appearance:none;width:22px;height:22px;border-radius:50%;
+      background:var(--primary);border:3px solid #fff;
+      box-shadow:0 2px 8px rgba(33,91,56,.3);cursor:pointer;
+    }
+    .compare-slider-row input[type=range]::-moz-range-thumb{
+      width:22px;height:22px;border-radius:50%;
+      background:var(--primary);border:3px solid #fff;
+      box-shadow:0 2px 8px rgba(33,91,56,.3);cursor:pointer;
+    }
+    .compare-distance-badge{
+      font-size:1.6rem;font-weight:800;color:var(--primary);
+      background:var(--primary-soft);padding:10px 18px;border-radius:14px;
+      white-space:nowrap;text-align:center;min-width:100px;
+    }
+    .compare-cards{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    .compare-card{
+      background:rgba(255,255,255,.72);border:1px solid var(--line);
+      border-radius:var(--radius-lg);padding:24px;
+      display:flex;flex-direction:column;align-items:center;gap:14px;
+      transition:transform .2s,box-shadow .2s;
+    }
+    .compare-card:hover{transform:translateY(-3px);box-shadow:0 18px 40px rgba(38,76,49,.12)}
+    .compare-icon{font-size:2.8rem}
+    .compare-card h3{font-size:1.15rem;font-weight:700;color:var(--text)}
+    .compare-bar-track{
+      width:100%;height:18px;border-radius:999px;
+      background:rgba(33,91,56,.08);overflow:hidden;position:relative;
+    }
+    .compare-bar-fill{
+      height:100%;border-radius:999px;
+      transition:width .5s cubic-bezier(.34,1.56,.64,1);
+    }
+    .compare-bar-fill.car-fill{background:linear-gradient(90deg,#e8a838,#c0392b)}
+    .compare-bar-fill.walk-fill{background:linear-gradient(90deg,var(--secondary),var(--primary))}
+    .compare-value{
+      font-size:2rem;font-weight:800;letter-spacing:-.04em;line-height:1;
+    }
+    .compare-value.high{color:#c0392b}
+    .compare-value.low{color:var(--primary)}
+    .compare-unit{font-size:.85rem;color:var(--muted);font-weight:500}
+    .compare-detail{font-size:.88rem;color:var(--muted);line-height:1.6;text-align:center}
+    .compare-savings{
+      margin-top:16px;padding:16px 20px;border-radius:16px;
+      background:linear-gradient(135deg,var(--primary-soft),rgba(155,207,143,.25));
+      border:1px solid rgba(33,91,56,.12);
+      display:flex;align-items:center;gap:14px;
+    }
+    .savings-icon{font-size:2rem}
+    .savings-text{font-size:.95rem;color:var(--text);line-height:1.65}
+    .savings-text strong{color:var(--primary)}
+
+    /* ── IMPACT SUMMARY ── */
+    .impact-section{margin-bottom:24px}
+    .impact-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+    .impact-metric{
+      background:rgba(255,255,255,.72);border:1px solid var(--line);
+      border-radius:var(--radius-lg);padding:20px;text-align:center;
+      transition:transform .2s;
+    }
+    .impact-metric:hover{transform:translateY(-2px)}
+    .impact-metric .im-icon{font-size:1.6rem;margin-bottom:8px}
+    .impact-metric .im-value{
+      font-size:1.8rem;font-weight:800;letter-spacing:-.04em;
+      color:var(--primary);line-height:1;margin-bottom:4px;
+    }
+    .impact-metric .im-label{font-size:.8rem;font-weight:600;color:var(--muted)}
+    .impact-breakdown{
+      display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;
+    }
+    .breakdown-chart-area{
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+      padding:20px;
+    }
+    .donut-container{position:relative;width:180px;height:180px}
+    .donut-container canvas{width:100%!important;height:100%!important}
+    .donut-center{
+      position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+      text-align:center;
+    }
+    .donut-center .dc-val{font-size:1.5rem;font-weight:800;color:var(--primary);line-height:1}
+    .donut-center .dc-label{font-size:.75rem;color:var(--muted);font-weight:600}
+    .breakdown-legend{display:flex;flex-direction:column;justify-content:center;gap:12px;padding:20px}
+    .legend-item{
+      display:flex;align-items:center;gap:12px;
+      padding:12px 16px;border-radius:14px;
+      background:rgba(255,255,255,.72);border:1px solid var(--line);
+    }
+    .legend-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0}
+    .legend-dot.transport{background:linear-gradient(135deg,var(--secondary),var(--primary))}
+    .legend-dot.food{background:linear-gradient(135deg,#f2db89,#d39d25)}
+    .legend-dot.energy{background:linear-gradient(135deg,#9ad6d9,#367b83)}
+    .legend-info{flex:1}
+    .legend-info .li-cat{font-weight:700;font-size:.9rem}
+    .legend-info .li-val{font-size:.82rem;color:var(--muted)}
+    .legend-pct{font-weight:800;font-size:1rem;color:var(--primary)}
+
+    .impact-rating{
+      padding:20px 24px;border-radius:18px;
+      display:flex;align-items:center;gap:18px;
+    }
+    .impact-rating.good{background:linear-gradient(135deg,rgba(221,244,221,.7),rgba(155,207,143,.25));border:1px solid rgba(33,91,56,.12)}
+    .impact-rating.moderate{background:linear-gradient(135deg,rgba(240,200,116,.2),rgba(240,200,116,.08));border:1px solid rgba(211,157,37,.15)}
+    .impact-rating.high{background:linear-gradient(135deg,rgba(192,57,43,.08),rgba(192,57,43,.03));border:1px solid rgba(192,57,43,.12)}
+    .impact-rating.none{background:rgba(255,255,255,.5);border:1px dashed var(--line)}
+    .rating-icon{font-size:2.2rem}
+    .rating-body h4{font-size:1.1rem;font-weight:700;margin-bottom:4px}
+    .rating-body p{font-size:.9rem;color:var(--muted);line-height:1.6}
+
+    .empty-impact{
+      text-align:center;padding:40px 20px;color:var(--muted);
+    }
+    .empty-impact .ei-icon{font-size:3rem;margin-bottom:12px;opacity:.5}
+    .empty-impact p{font-size:.95rem;line-height:1.7}
+    .empty-impact a{
+      display:inline-block;margin-top:16px;
+      padding:12px 24px;border-radius:999px;
+      background:var(--primary);color:#fff;text-decoration:none;
+      font-weight:700;font-size:.9rem;
+      box-shadow:0 10px 20px rgba(33,91,56,.2);
+      transition:transform .2s,opacity .2s;
+    }
+    .empty-impact a:hover{transform:translateY(-1px);opacity:.9}
+
+    @media(max-width:1024px){
+      .navbar{padding:16px 24px}
+      .education-grid{grid-template-columns:1fr}
+      .compare-cards{grid-template-columns:1fr}
+      .impact-metrics{grid-template-columns:repeat(2,1fr)}
+      .impact-breakdown{grid-template-columns:1fr}
+    }
+    @media(max-width:640px){
+      .shell{width:calc(100% - 24px);padding:24px 0 40px}
+      .impact-metrics{grid-template-columns:1fr 1fr}
+      .compare-controls{grid-template-columns:1fr}
+    }
+  </style>
 </head>
 <body>
   <header class="navbar">
-    <div class="logo">EcoMeter</div>
+    <a href="index.html" class="logo">
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="18" cy="18" r="18" fill="#215b38"/>
+        <circle cx="18" cy="18" r="15.5" fill="none" stroke="#9bcf8f" stroke-width="1.2" stroke-dasharray="3 3"/>
+        <path d="M18 7 C18 7, 10 14, 10 20 C10 24.4 13.6 28 18 28 C22.4 28 26 24.4 26 20 C26 14 18 7 18 7Z" fill="#9bcf8f"/>
+        <path d="M18 28 L18 16" stroke="#215b38" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M18 20 L14.5 23.5" stroke="#215b38" stroke-width="1.4" stroke-linecap="round"/>
+        <path d="M18 17 L21.5 20.5" stroke="#215b38" stroke-width="1.4" stroke-linecap="round"/>
+        <path d="M8 18 L6.5 18" stroke="#9bcf8f" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M29.5 18 L28 18" stroke="#9bcf8f" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M18 6.5 L18 8" stroke="#9bcf8f" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M18 28 L18 29.5" stroke="#9bcf8f" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M10.9 10.9 L12 12" stroke="#9bcf8f" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M24 24 L25.1 25.1" stroke="#9bcf8f" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M25.1 10.9 L24 12" stroke="#9bcf8f" stroke-width="1.2" stroke-linecap="round"/>
+        <path d="M12 24 L10.9 25.1" stroke="#9bcf8f" stroke-width="1.2" stroke-linecap="round"/>
+      </svg>
+      <span class="logo-text">EcoMeter</span>
+    </a>
     <nav>
       <a href="index.html">Home</a>
       <a href="calculator.html">Calculator</a>
@@ -17,75 +275,328 @@
     </nav>
   </header>
 
-  <main class="centered">
-    <div class="page-title">
-      <h1>Carbon Footprint Education</h1>
-      <p>Learn what a carbon footprint is, why it matters, and how simple choices affect the environment.</p>
-    </div>
+  <main>
+    <div class="shell">
 
-    <div class="education-grid">
-      <section class="card education-card">
-        <h2>1. What is a carbon footprint?</h2>
-        <p>
-          A carbon footprint is the total amount of greenhouse gases, especially carbon dioxide (CO₂),
-          produced by a person’s daily activities. This can come from transportation, food choices,
-          electricity use, and other lifestyle habits.
+      <!-- ══ HERO ══ -->
+      <div class="card" style="margin-bottom:24px">
+        <p class="section-kicker">Education</p>
+        <h2 style="font-size:1.8rem;margin-bottom:14px;">Understand Your Carbon Footprint</h2>
+        <p style="color:var(--muted);line-height:1.8;max-width:70ch;">
+          Carbon footprint is not just a climate term. It is a practical way to understand which daily choices create the most impact — and which changes are actually worth making.
         </p>
-        <p>
-          For example, driving a car, eating a beef-heavy meal, or using a lot of electricity can all
-          increase a person’s carbon footprint.
-        </p>
-      </section>
+      </div>
 
-      <section class="card education-card">
-        <h2>2. Why does carbon footprint matter?</h2>
-        <p>
-          Carbon footprint matters because greenhouse gas emissions contribute to climate change.
-          Climate change can lead to stronger heat waves, flooding, droughts, rising sea levels,
-          and harm to ecosystems.
+      <!-- ══ COMPARE OPTIONS: CAR vs WALKING ══ -->
+      <div class="card compare-section">
+        <p class="section-kicker">Compare options</p>
+        <h2 style="font-size:1.4rem;letter-spacing:-.03em;margin-bottom:6px">Car vs Walking</h2>
+        <p style="color:var(--muted);line-height:1.7;margin-bottom:22px;max-width:64ch">
+          See how choosing to walk instead of drive changes your carbon impact. Adjust the distance to explore different scenarios.
         </p>
-        <p>
-          Understanding carbon footprint helps people connect everyday actions with environmental impact.
-          Even small changes can make a difference when many people do them consistently.
-        </p>
-      </section>
 
-      <section class="card education-card">
-        <h2>3. Simple emission calculation logic</h2>
-        <p><strong>Simple idea:</strong> Emissions = Activity Amount × Emission Factor</p>
-        <p>
-          This means we can estimate emissions by taking how much of an activity someone does
-          and multiplying it by a simple factor.
-        </p>
-        <ul>
-          <li>Transportation: distance × factor for the travel type</li>
-          <li>Food: number of meals × factor for the meal type</li>
-          <li>Electricity: amount of energy used × factor for electricity</li>
-        </ul>
-        <p>
-          This is a simplified educational model. It helps users compare choices, even if it is
-          not a perfect scientific measurement.
-        </p>
-      </section>
+        <div class="compare-controls">
+          <div class="compare-slider-group">
+            <label for="compare-distance">Trip distance</label>
+            <div class="compare-slider-row">
+              <span style="font-size:.85rem;color:var(--muted);min-width:30px">1 km</span>
+              <input type="range" id="compare-distance" min="1" max="50" value="10" oninput="updateCompare()" />
+              <span style="font-size:.85rem;color:var(--muted);min-width:36px">50 km</span>
+            </div>
+          </div>
+          <div class="compare-distance-badge" id="compare-badge">10 km</div>
+        </div>
 
-      <section class="card education-card">
-        <h2>4. Simple environmental impact examples</h2>
-        <ul>
-          <li>Driving alone usually creates more emissions than taking a bus.</li>
-          <li>Walking or biking usually creates little to no direct carbon emissions.</li>
-          <li>Beef-heavy meals usually create more emissions than vegetarian meals.</li>
-          <li>Using more electricity at home generally increases household emissions.</li>
-        </ul>
-        <p>
-          Example: If a person replaces short car trips with walking a few times each week,
-          their total carbon footprint can decrease over time.
-        </p>
-      </section>
+        <div class="compare-cards">
+          <div class="compare-card">
+            <div class="compare-icon">🚗</div>
+            <h3>Driving a Car</h3>
+            <div class="compare-bar-track">
+              <div class="compare-bar-fill car-fill" id="car-bar" style="width:40%"></div>
+            </div>
+            <div>
+              <span class="compare-value high" id="car-value">2.10</span>
+              <span class="compare-unit">kg CO₂e</span>
+            </div>
+            <p class="compare-detail" id="car-detail">Average car emits ~0.21 kg CO₂ per km driven</p>
+          </div>
+          <div class="compare-card">
+            <div class="compare-icon">🚶</div>
+            <h3>Walking</h3>
+            <div class="compare-bar-track">
+              <div class="compare-bar-fill walk-fill" id="walk-bar" style="width:0%"></div>
+            </div>
+            <div>
+              <span class="compare-value low" id="walk-value">0.00</span>
+              <span class="compare-unit">kg CO₂e</span>
+            </div>
+            <p class="compare-detail" id="walk-detail">Walking produces zero direct carbon emissions</p>
+          </div>
+        </div>
+
+        <div class="compare-savings" id="compare-savings">
+          <div class="savings-icon">🌱</div>
+          <div class="savings-text" id="savings-text">
+            Walking this trip saves <strong>2.10 kg CO₂e</strong>. Do this 5x a week and you save <strong>10.50 kg</strong> per week!
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ YOUR IMPACT SUMMARY ══ -->
+      <div class="card impact-section" id="impact-section">
+        <p class="section-kicker">Your impact</p>
+        <h2 style="font-size:1.4rem;letter-spacing:-.03em;margin-bottom:20px">Personal Carbon Summary</h2>
+
+        <div id="impact-content">
+          <!-- Filled by JS -->
+        </div>
+      </div>
+
+      <!-- ══ EXISTING EDUCATION CONTENT ══ -->
+      <div class="education-grid">
+        <section class="card education-card">
+          <h2>1. What is a carbon footprint?</h2>
+          <p>
+            A carbon footprint is the total amount of greenhouse gases, especially carbon dioxide (CO₂),
+            produced by a person's daily activities. This can come from transportation, food choices,
+            electricity use, and other lifestyle habits.
+          </p>
+          <p>
+            For example, driving a car, eating a beef-heavy meal, or using a lot of electricity can all
+            increase a person's carbon footprint.
+          </p>
+        </section>
+
+        <section class="card education-card">
+          <h2>2. Why does carbon footprint matter?</h2>
+          <p>
+            Carbon footprint matters because greenhouse gas emissions contribute to climate change.
+            Climate change can lead to stronger heat waves, flooding, droughts, rising sea levels,
+            and harm to ecosystems.
+          </p>
+          <p>
+            Understanding carbon footprint helps people connect everyday actions with environmental impact.
+            Even small changes can make a difference when many people do them consistently.
+          </p>
+        </section>
+
+        <section class="card education-card">
+          <h2>3. Simple emission calculation logic</h2>
+          <p><strong>Simple idea:</strong> Emissions = Activity Amount × Emission Factor</p>
+          <p>
+            This means we can estimate emissions by taking how much of an activity someone does
+            and multiplying it by a simple factor.
+          </p>
+          <ul>
+            <li>Transportation: distance × factor for the travel type</li>
+            <li>Food: number of meals × factor for the meal type</li>
+            <li>Electricity: amount of energy used × factor for electricity</li>
+          </ul>
+        </section>
+
+        <section class="card education-card">
+          <h2>4. Simple environmental impact examples</h2>
+          <ul>
+            <li>Driving alone usually creates more emissions than taking a bus.</li>
+            <li>Walking or biking usually creates little to no direct carbon emissions.</li>
+            <li>Beef-heavy meals usually create more emissions than vegetarian meals.</li>
+            <li>Using more electricity at home generally increases household emissions.</li>
+          </ul>
+          <p>
+            If a person replaces short car trips with walking a few times each week,
+            their total carbon footprint can decrease over time.
+          </p>
+        </section>
+      </div>
+
     </div>
   </main>
 
-  <footer class="footer">
-    © 2026 EcoMeter | Make sustainable choices
+  <footer>
+    <p>© 2026 EcoMeter | Make sustainable choices</p>
   </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const STORAGE_KEY = "ecometer-activities";
+    const CAR_FACTOR = 0.21;
+
+    // ── COMPARE: CAR vs WALKING ──
+    function updateCompare() {
+      const dist = Number(document.getElementById('compare-distance').value);
+      const carKg = dist * CAR_FACTOR;
+      const maxKg = 50 * CAR_FACTOR;
+
+      document.getElementById('compare-badge').textContent = dist + ' km';
+      document.getElementById('car-value').textContent = carKg.toFixed(2);
+      document.getElementById('walk-value').textContent = '0.00';
+      document.getElementById('car-bar').style.width = ((carKg / maxKg) * 100) + '%';
+      document.getElementById('walk-bar').style.width = '0%';
+
+      document.getElementById('car-detail').textContent =
+        dist + ' km × 0.21 kg/km = ' + carKg.toFixed(2) + ' kg CO₂e';
+      document.getElementById('walk-detail').textContent =
+        dist + ' km × 0 kg/km = 0 kg CO₂e (zero emissions!)';
+
+      const weeklySave = (carKg * 5).toFixed(2);
+      const yearlySave = (carKg * 5 * 52).toFixed(1);
+      document.getElementById('savings-text').innerHTML =
+        'Walking this trip saves <strong>' + carKg.toFixed(2) + ' kg CO₂e</strong>. ' +
+        'Do this 5× a week and you save <strong>' + weeklySave + ' kg/week</strong> ' +
+        '— that\'s <strong>' + yearlySave + ' kg/year</strong>!';
+    }
+
+    // ── IMPACT SUMMARY ──
+    function renderImpactSummary() {
+      const container = document.getElementById('impact-content');
+      let activities = [];
+      try { activities = JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch {}
+
+      if (!activities.length) {
+        container.innerHTML =
+          '<div class="empty-impact">' +
+            '<div class="ei-icon">📊</div>' +
+            '<p>No activity data yet. Start logging your daily carbon footprint<br>to see your personal impact summary here.</p>' +
+            '<a href="index.html">Start Tracking</a>' +
+          '</div>';
+        return;
+      }
+
+      const totals = activities.reduce(function(acc, a) {
+        acc.transport += (a.transportKg || 0);
+        acc.food += (a.foodKg || 0);
+        acc.energy += (a.energyKg || 0);
+        acc.total += (a.kg || 0);
+        return acc;
+      }, { transport: 0, food: 0, energy: 0, total: 0 });
+
+      const days = new Set(activities.map(function(a) { return a.date; })).size;
+      const avgPerDay = days ? (totals.total / days) : 0;
+
+      const cats = [
+        ['Transport', totals.transport],
+        ['Food', totals.food],
+        ['Energy', totals.energy]
+      ];
+      const top = cats.reduce(function(a, c) { return c[1] > a[1] ? c : a; }, ['—', 0]);
+
+      // Rating
+      var ratingClass, ratingIcon, ratingTitle, ratingDesc;
+      if (avgPerDay <= 5) {
+        ratingClass = 'good';
+        ratingIcon = '🌿';
+        ratingTitle = 'Low Impact';
+        ratingDesc = 'Your daily average is below 5 kg CO₂e — well under typical levels. Keep up the great choices!';
+      } else if (avgPerDay <= 12) {
+        ratingClass = 'moderate';
+        ratingIcon = '⚠️';
+        ratingTitle = 'Moderate Impact';
+        ratingDesc = 'Your daily average is between 5–12 kg CO₂e. There are opportunities to reduce, especially in your top category.';
+      } else {
+        ratingClass = 'high';
+        ratingIcon = '🔴';
+        ratingTitle = 'High Impact';
+        ratingDesc = 'Your daily average exceeds 12 kg CO₂e. Focus on your largest category for the fastest reduction.';
+      }
+
+      // Percentages
+      var tPct = totals.total ? ((totals.transport / totals.total) * 100).toFixed(0) : 0;
+      var fPct = totals.total ? ((totals.food / totals.total) * 100).toFixed(0) : 0;
+      var ePct = totals.total ? ((totals.energy / totals.total) * 100).toFixed(0) : 0;
+
+      container.innerHTML =
+        '<div class="impact-metrics">' +
+          '<div class="impact-metric">' +
+            '<div class="im-icon">📊</div>' +
+            '<div class="im-value">' + totals.total.toFixed(1) + ' kg</div>' +
+            '<div class="im-label">Total CO₂e</div>' +
+          '</div>' +
+          '<div class="impact-metric">' +
+            '<div class="im-icon">📅</div>' +
+            '<div class="im-value">' + avgPerDay.toFixed(1) + ' kg</div>' +
+            '<div class="im-label">Avg / day</div>' +
+          '</div>' +
+          '<div class="impact-metric">' +
+            '<div class="im-icon">📝</div>' +
+            '<div class="im-value">' + activities.length + '</div>' +
+            '<div class="im-label">Activities logged</div>' +
+          '</div>' +
+          '<div class="impact-metric">' +
+            '<div class="im-icon">🏷️</div>' +
+            '<div class="im-value" style="font-size:1.2rem">' + (top[1] > 0 ? top[0] : '—') + '</div>' +
+            '<div class="im-label">Top category</div>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="impact-breakdown">' +
+          '<div class="breakdown-chart-area">' +
+            '<div class="donut-container"><canvas id="impact-donut"></canvas>' +
+              '<div class="donut-center"><div class="dc-val">' + days + '</div><div class="dc-label">days tracked</div></div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="breakdown-legend">' +
+            '<div class="legend-item">' +
+              '<div class="legend-dot transport"></div>' +
+              '<div class="legend-info"><div class="li-cat">Transport</div><div class="li-val">' + totals.transport.toFixed(1) + ' kg CO₂e</div></div>' +
+              '<div class="legend-pct">' + tPct + '%</div>' +
+            '</div>' +
+            '<div class="legend-item">' +
+              '<div class="legend-dot food"></div>' +
+              '<div class="legend-info"><div class="li-cat">Food</div><div class="li-val">' + totals.food.toFixed(1) + ' kg CO₂e</div></div>' +
+              '<div class="legend-pct">' + fPct + '%</div>' +
+            '</div>' +
+            '<div class="legend-item">' +
+              '<div class="legend-dot energy"></div>' +
+              '<div class="legend-info"><div class="li-cat">Energy</div><div class="li-val">' + totals.energy.toFixed(1) + ' kg CO₂e</div></div>' +
+              '<div class="legend-pct">' + ePct + '%</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="impact-rating ' + ratingClass + '">' +
+          '<div class="rating-icon">' + ratingIcon + '</div>' +
+          '<div class="rating-body"><h4>' + ratingTitle + '</h4><p>' + ratingDesc + '</p></div>' +
+        '</div>';
+
+      // Render donut chart
+      var donutCanvas = document.getElementById('impact-donut');
+      if (donutCanvas) {
+        new Chart(donutCanvas.getContext('2d'), {
+          type: 'doughnut',
+          data: {
+            labels: ['Transport', 'Food', 'Energy'],
+            datasets: [{
+              data: [totals.transport, totals.food, totals.energy],
+              backgroundColor: ['#215b38', '#d39d25', '#367b83'],
+              borderWidth: 3,
+              borderColor: 'rgba(255,255,255,0.9)',
+              hoverOffset: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            cutout: '65%',
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: function(ctx) {
+                    return ctx.label + ': ' + ctx.parsed.toFixed(1) + ' kg CO₂e';
+                  }
+                }
+              }
+            }
+          }
+        });
+      }
+    }
+
+    // ── INIT ──
+    document.addEventListener('DOMContentLoaded', function() {
+      updateCompare();
+      renderImpactSummary();
+    });
+  </script>
 </body>
 </html>
