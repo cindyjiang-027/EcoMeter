@@ -700,12 +700,69 @@
         Carbon footprint is not just a climate term. It is a practical way to understand which daily choices create the most impact — and which changes are actually worth making.
       </p>
     </div>
-    
+
+    <!-- ══ COMPARE OPTIONS: CAR vs WALKING ══ -->
+    <div class="card" style="margin-bottom:24px">
+      <p class="section-kicker">Compare options</p>
+      <h2 style="font-size:1.4rem;letter-spacing:-.03em;margin-bottom:6px">Car vs Walking</h2>
+      <p style="color:var(--muted);line-height:1.7;margin-bottom:22px;max-width:64ch">
+        See how choosing to walk instead of drive changes your carbon impact. Adjust the distance to explore different scenarios.
+      </p>
+
+      <div style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:end;margin-bottom:24px">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <label for="edu-compare-distance" style="font-weight:600;font-size:.95rem">Trip distance</label>
+          <div style="display:flex;align-items:center;gap:14px">
+            <span style="font-size:.85rem;color:var(--muted);min-width:30px">1 km</span>
+            <input type="range" id="edu-compare-distance" min="1" max="50" value="10" oninput="eduUpdateCompare()" style="flex:1;height:8px;-webkit-appearance:none;appearance:none;background:linear-gradient(90deg,var(--primary-soft),var(--secondary));border-radius:999px;outline:none;cursor:pointer" />
+            <span style="font-size:.85rem;color:var(--muted);min-width:36px">50 km</span>
+          </div>
+        </div>
+        <div id="edu-compare-badge" style="font-size:1.6rem;font-weight:800;color:var(--primary);background:var(--primary-soft);padding:10px 18px;border-radius:14px;white-space:nowrap;text-align:center;min-width:100px">10 km</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div style="background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:var(--radius-lg);padding:24px;display:flex;flex-direction:column;align-items:center;gap:14px;transition:transform .2s,box-shadow .2s">
+          <div style="font-size:2.8rem">🚗</div>
+          <h3 style="font-size:1.15rem;font-weight:700">Driving a Car</h3>
+          <div style="width:100%;height:18px;border-radius:999px;background:rgba(33,91,56,.08);overflow:hidden">
+            <div id="edu-car-bar" style="height:100%;border-radius:999px;background:linear-gradient(90deg,#e8a838,#c0392b);transition:width .5s cubic-bezier(.34,1.56,.64,1);width:20%"></div>
+          </div>
+          <div><span id="edu-car-value" style="font-size:2rem;font-weight:800;letter-spacing:-.04em;color:#c0392b">2.10</span> <span style="font-size:.85rem;color:var(--muted)">kg CO₂e</span></div>
+          <p id="edu-car-detail" style="font-size:.88rem;color:var(--muted);line-height:1.6;text-align:center">10 km × 0.21 kg/km = 2.10 kg CO₂e</p>
+        </div>
+        <div style="background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:var(--radius-lg);padding:24px;display:flex;flex-direction:column;align-items:center;gap:14px;transition:transform .2s,box-shadow .2s">
+          <div style="font-size:2.8rem">🚶</div>
+          <h3 style="font-size:1.15rem;font-weight:700">Walking</h3>
+          <div style="width:100%;height:18px;border-radius:999px;background:rgba(33,91,56,.08);overflow:hidden">
+            <div id="edu-walk-bar" style="height:100%;border-radius:999px;background:linear-gradient(90deg,var(--secondary),var(--primary));transition:width .5s;width:0%"></div>
+          </div>
+          <div><span id="edu-walk-value" style="font-size:2rem;font-weight:800;letter-spacing:-.04em;color:var(--primary)">0.00</span> <span style="font-size:.85rem;color:var(--muted)">kg CO₂e</span></div>
+          <p id="edu-walk-detail" style="font-size:.88rem;color:var(--muted);line-height:1.6;text-align:center">10 km × 0 kg/km = 0 kg CO₂e (zero emissions!)</p>
+        </div>
+      </div>
+
+      <div style="margin-top:16px;padding:16px 20px;border-radius:16px;background:linear-gradient(135deg,var(--primary-soft),rgba(155,207,143,.25));border:1px solid rgba(33,91,56,.12);display:flex;align-items:center;gap:14px">
+        <div style="font-size:2rem">🌱</div>
+        <div id="edu-savings-text" style="font-size:.95rem;color:var(--text);line-height:1.65">
+          Walking this trip saves <strong>2.10 kg CO₂e</strong>. Do this 5× a week and you save <strong>10.50 kg/week</strong> — that's <strong>546.0 kg/year</strong>!
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ YOUR IMPACT SUMMARY ══ -->
+    <div class="card" style="margin-bottom:24px">
+      <p class="section-kicker">Your impact</p>
+      <h2 style="font-size:1.4rem;letter-spacing:-.03em;margin-bottom:20px">Personal Carbon Summary</h2>
+      <div id="edu-impact-content"></div>
+    </div>
+
+    <!-- ══ QUICK TIPS ══ -->
     <div class="card quick-tips-card" style="margin-bottom:24px">
       <p class="section-kicker">Quick Tips</p>
       <h3 style="font-size:1.35rem; margin-bottom:10px;">Start with the highest-leverage changes</h3>
       <p style="color:var(--muted); line-height:1.7; margin-bottom:18px;">
-        Small changes are not all equally useful. The goal is not to change everything. The goal is to notice which repeated behaviors create the most impact, and start there.
+        Small changes are not all equally useful. The goal is to notice which repeated behaviors create the most impact, and start there.
       </p>
     
       <div class="tips-grid">
@@ -756,30 +813,12 @@
     </div>
     
     <div class="card" style="margin-bottom:20px">
-      <p class="section-kicker">Why it matters</p>
-      <h3 style="font-size:1.35rem; margin-bottom:10px;">Why does it matter?</h3>
-      <p style="color:var(--muted); line-height:1.8;">
-        Carbon footprint matters because it helps reveal dependence on high-emission systems. The issue is not one isolated action. The real impact comes from repeated behavior at scale.
-      </p>
-      <p style="margin-top:12px; color:var(--muted); line-height:1.8;">
-        A single choice may not change much by itself, but high-frequency habits can add up quickly over time. That is why carbon footprint is useful as a decision tool: it helps people focus on the behaviors that are both common and high-impact.
-      </p>
-    </div>
-    
-    <div class="card" style="margin-bottom:20px">
       <p class="section-kicker">Logic</p>
       <h3 style="font-size:1.35rem; margin-bottom:14px;">How the calculation works</h3>
     
       <div class="logic-block">
         <h4>Basic idea</h4>
         <p><strong>Emissions = Activity Amount × Emission Factor</strong></p>
-      </div>
-    
-      <div class="logic-block">
-        <h4>What that means</h4>
-        <p>
-          The calculator does not measure exact real-world emissions. Instead, it uses average values to estimate impact in a way that makes different choices easier to compare.
-        </p>
       </div>
     
       <div class="logic-block">
@@ -799,42 +838,6 @@
           </div>
         </div>
       </div>
-    
-      <div class="logic-block">
-        <h4>Why this still helps</h4>
-        <p>
-          Even if the number is not perfect, the model is still useful because it shows trends, comparisons, and dominant categories.
-        </p>
-      </div>
-    </div>
-    
-    <div class="card" style="margin-bottom:20px">
-      <p class="section-kicker">Impact</p>
-      <h3 style="font-size:1.35rem; margin-bottom:10px;">What actually drives impact?</h3>
-      <p style="color:var(--muted); line-height:1.8;">
-        Most environmental impact is not driven by random one-time actions. It usually comes from a combination of frequency and intensity.
-      </p>
-    
-      <div class="impact-points">
-        <div class="impact-point">
-          <h4>Transport</h4>
-          <p>Often has high impact per action, especially when the same travel pattern repeats over time.</p>
-        </div>
-    
-        <div class="impact-point">
-          <h4>Food</h4>
-          <p>Usually has moderate impact per meal, but it adds up because food choices happen frequently.</p>
-        </div>
-    
-        <div class="impact-point">
-          <h4>Energy</h4>
-          <p>May feel less dramatic than travel, but it creates a steady baseline footprint in everyday life.</p>
-        </div>
-      </div>
-    
-      <p style="margin-top:14px; color:var(--muted); line-height:1.8;">
-        This is why total emissions alone are not enough. What matters more is the pattern behind them: which category appears often, which one spikes, and which one dominates over time.
-      </p>
     </div>
 
   </div>
@@ -868,6 +871,7 @@ function showPage(name) {
   el('nav-' + name).classList.add('active');
   if (name === 'dashboard') renderDashboard();
   if (name === 'calculator') { renderLivePreview(); renderTodayList(); updateWeeklyTotal(); }
+  if (name === 'education') { eduUpdateCompare(); eduRenderImpact(); }
 }
 
 // ── CATEGORY TABS ──
@@ -1271,6 +1275,118 @@ function toggleTip(card) {
   card.classList.toggle('open');
 }
 
+// ── EDUCATION: COMPARE CAR vs WALKING ──
+const EDU_CAR_FACTOR = 0.21;
+let eduDonutInstance = null;
+
+function eduUpdateCompare() {
+  const dist = Number(el('edu-compare-distance').value);
+  const carKg = dist * EDU_CAR_FACTOR;
+  const maxKg = 50 * EDU_CAR_FACTOR;
+
+  el('edu-compare-badge').textContent = dist + ' km';
+  el('edu-car-value').textContent = carKg.toFixed(2);
+  el('edu-walk-value').textContent = '0.00';
+  el('edu-car-bar').style.width = ((carKg / maxKg) * 100) + '%';
+  el('edu-walk-bar').style.width = '0%';
+  el('edu-car-detail').textContent = dist + ' km × 0.21 kg/km = ' + carKg.toFixed(2) + ' kg CO₂e';
+  el('edu-walk-detail').textContent = dist + ' km × 0 kg/km = 0 kg CO₂e (zero emissions!)';
+
+  const weeklySave = (carKg * 5).toFixed(2);
+  const yearlySave = (carKg * 5 * 52).toFixed(1);
+  el('edu-savings-text').innerHTML =
+    'Walking this trip saves <strong>' + carKg.toFixed(2) + ' kg CO₂e</strong>. ' +
+    'Do this 5× a week and you save <strong>' + weeklySave + ' kg/week</strong> ' +
+    '— that\'s <strong>' + yearlySave + ' kg/year</strong>!';
+}
+
+// ── EDUCATION: IMPACT SUMMARY ──
+function eduRenderImpact() {
+  const container = el('edu-impact-content');
+  if (!container) return;
+  const activities = getActivities();
+
+  if (!activities.length) {
+    container.innerHTML =
+      '<div style="text-align:center;padding:40px 20px;color:var(--muted)">' +
+        '<div style="font-size:3rem;margin-bottom:12px;opacity:.5">📊</div>' +
+        '<p style="font-size:.95rem;line-height:1.7">No activity data yet. Start logging your daily carbon footprint<br>to see your personal impact summary here.</p>' +
+        '<button class="primary-btn" style="margin-top:16px" onclick="showPage(\'calculator\')">Start Tracking</button>' +
+      '</div>';
+    return;
+  }
+
+  const totals = activities.reduce((acc, a) => {
+    acc.transport += (a.transportKg || 0);
+    acc.food += (a.foodKg || 0);
+    acc.energy += (a.energyKg || 0);
+    acc.total += (a.kg || 0);
+    return acc;
+  }, { transport: 0, food: 0, energy: 0, total: 0 });
+
+  const days = new Set(activities.map(a => a.date)).size;
+  const avgPerDay = days ? (totals.total / days) : 0;
+  const cats = [['Transport', totals.transport], ['Food', totals.food], ['Energy', totals.energy]];
+  const top = cats.reduce((a, c) => c[1] > a[1] ? c : a, ['—', 0]);
+
+  let ratingClass, ratingIcon, ratingTitle, ratingDesc;
+  if (avgPerDay <= 5) {
+    ratingClass = 'good'; ratingIcon = '🌿'; ratingTitle = 'Low Impact';
+    ratingDesc = 'Your daily average is below 5 kg CO₂e — well under typical levels. Keep it up!';
+  } else if (avgPerDay <= 12) {
+    ratingClass = 'moderate'; ratingIcon = '⚠️'; ratingTitle = 'Moderate Impact';
+    ratingDesc = 'Your daily average is 5–12 kg CO₂e. Focus on your top category for the fastest reduction.';
+  } else {
+    ratingClass = 'high'; ratingIcon = '🔴'; ratingTitle = 'High Impact';
+    ratingDesc = 'Your daily average exceeds 12 kg CO₂e. Reducing your largest category will help the most.';
+  }
+
+  const tPct = totals.total ? ((totals.transport / totals.total) * 100).toFixed(0) : 0;
+  const fPct = totals.total ? ((totals.food / totals.total) * 100).toFixed(0) : 0;
+  const ePct = totals.total ? ((totals.energy / totals.total) * 100).toFixed(0) : 0;
+
+  container.innerHTML =
+    '<div class="metrics-row" style="margin-bottom:20px">' +
+      '<div class="metric-card"><span class="m-label">Total CO₂e</span><span class="m-value">' + totals.total.toFixed(1) + ' kg</span><span class="m-sub">All activities combined</span></div>' +
+      '<div class="metric-card"><span class="m-label">Avg / day</span><span class="m-value">' + avgPerDay.toFixed(1) + ' kg</span><span class="m-sub">Based on ' + days + ' tracked days</span></div>' +
+      '<div class="metric-card"><span class="m-label">Activities</span><span class="m-value">' + activities.length + '</span><span class="m-sub">Total entries logged</span></div>' +
+      '<div class="metric-card"><span class="m-label">Top category</span><span class="m-value" style="font-size:1.3rem">' + (top[1] > 0 ? top[0] : '—') + '</span><span class="m-sub">Largest contributor</span></div>' +
+    '</div>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">' +
+      '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px">' +
+        '<div style="position:relative;width:180px;height:180px">' +
+          '<canvas id="edu-donut"></canvas>' +
+          '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center"><div style="font-size:1.5rem;font-weight:800;color:var(--primary);line-height:1">' + days + '</div><div style="font-size:.75rem;color:var(--muted);font-weight:600">days tracked</div></div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="display:flex;flex-direction:column;justify-content:center;gap:12px;padding:20px">' +
+        '<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:14px;background:rgba(255,255,255,.72);border:1px solid var(--line)"><div style="width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,var(--secondary),var(--primary));flex-shrink:0"></div><div style="flex:1"><div style="font-weight:700;font-size:.9rem">Transport</div><div style="font-size:.82rem;color:var(--muted)">' + totals.transport.toFixed(1) + ' kg CO₂e</div></div><div style="font-weight:800;font-size:1rem;color:var(--primary)">' + tPct + '%</div></div>' +
+        '<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:14px;background:rgba(255,255,255,.72);border:1px solid var(--line)"><div style="width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,#f2db89,#d39d25);flex-shrink:0"></div><div style="flex:1"><div style="font-weight:700;font-size:.9rem">Food</div><div style="font-size:.82rem;color:var(--muted)">' + totals.food.toFixed(1) + ' kg CO₂e</div></div><div style="font-weight:800;font-size:1rem;color:var(--primary)">' + fPct + '%</div></div>' +
+        '<div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:14px;background:rgba(255,255,255,.72);border:1px solid var(--line)"><div style="width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg,#9ad6d9,#367b83);flex-shrink:0"></div><div style="flex:1"><div style="font-weight:700;font-size:.9rem">Energy</div><div style="font-size:.82rem;color:var(--muted)">' + totals.energy.toFixed(1) + ' kg CO₂e</div></div><div style="font-weight:800;font-size:1rem;color:var(--primary)">' + ePct + '%</div></div>' +
+      '</div>' +
+    '</div>' +
+    '<div style="padding:20px 24px;border-radius:18px;display:flex;align-items:center;gap:18px;' +
+      (ratingClass === 'good' ? 'background:linear-gradient(135deg,rgba(221,244,221,.7),rgba(155,207,143,.25));border:1px solid rgba(33,91,56,.12)' :
+       ratingClass === 'moderate' ? 'background:linear-gradient(135deg,rgba(240,200,116,.2),rgba(240,200,116,.08));border:1px solid rgba(211,157,37,.15)' :
+       'background:linear-gradient(135deg,rgba(192,57,43,.08),rgba(192,57,43,.03));border:1px solid rgba(192,57,43,.12)') + '">' +
+      '<div style="font-size:2.2rem">' + ratingIcon + '</div>' +
+      '<div><h4 style="font-size:1.1rem;font-weight:700;margin-bottom:4px">' + ratingTitle + '</h4><p style="font-size:.9rem;color:var(--muted);line-height:1.6">' + ratingDesc + '</p></div>' +
+    '</div>';
+
+  if (eduDonutInstance) { eduDonutInstance.destroy(); eduDonutInstance = null; }
+  const donutCanvas = el('edu-donut');
+  if (donutCanvas) {
+    eduDonutInstance = new Chart(donutCanvas.getContext('2d'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Transport', 'Food', 'Energy'],
+        datasets: [{ data: [totals.transport, totals.food, totals.energy], backgroundColor: ['#215b38', '#d39d25', '#367b83'], borderWidth: 3, borderColor: 'rgba(255,255,255,0.9)', hoverOffset: 6 }]
+      },
+      options: { responsive: true, maintainAspectRatio: true, cutout: '65%', plugins: { legend: { display: false } } }
+    });
+  }
+}
+
 // ── INIT ──
 document.addEventListener('DOMContentLoaded', function() {
   el('entry-date').value = new Date().toISOString().slice(0,10);
@@ -1278,6 +1394,8 @@ document.addEventListener('DOMContentLoaded', function() {
   renderLivePreview();
   renderTodayList();
   updateWeeklyTotal();
+  eduUpdateCompare();
+  eduRenderImpact();
 });
 
 </script>
